@@ -1,0 +1,5 @@
+pandas=1.4.3
+numpy=1.23.0
+notion-client=1.0.0
+gspread=5.4.0
+oauth2client=4.1.3
