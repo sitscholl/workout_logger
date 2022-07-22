@@ -150,7 +150,7 @@ with col1:
     st.table(wo_tbl.groupby('Exercise Name')['Set', 'Reps', 'RPE'].agg(agg_funcs).style.format(precision=1))
     
 with col2:
-    last_wo_date = ex_log.loc[ex_log['Date'] != wo_date, 'Date'].max()
+    last_wo_date = ex_log.loc[ex_log['Date'].dt.date != wo_date, 'Date'].max()
     st.markdown('### Last Workout')
     st.caption(datetime.datetime.strftime(last_wo_date, '%Y-%m-%d'))
     
