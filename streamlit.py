@@ -46,8 +46,13 @@ def get_notion(token, db_id, query_filter = None):
     db_raw = call_notion(token, db_id, query_filter)
     return(to_df(db_raw['results']))
 
+@st.cache(allow_output_mutation = True)
+def get_mutable():
+    return defaultdict(list)
+
 corr_df = pd.DataFrame([['Concentric', 1],  ['Eccentric', 3], ['Isometric', 2]], 
                           columns = ['Type', 'corr'])
+wo_tbl_cols = ['Order', 'Exercise', 'Set', 'Weight', 'Distance', 'Reps', 'RPE', 'Failure', 'Notes']
 
 # --- Import Datasets ---
 ##Use Parent Exercise column (relation) to get parent exercise name instead of Parent column
@@ -79,10 +84,8 @@ if "defaults" not in st.session_state.keys():
     
 if "end_time" not in st.session_state.keys():
     st.session_state.end_time = None
-    
-wo_tbl_cols = ['Order', 'Exercise', 'Set', 'Weight', 'Distance', 'Reps', 'RPE', 'Failure', 'Notes']
-if "wo_tbl" not in st.session_state.keys():
-    st.session_state.wo_tbl = pd.DataFrame(columns = wo_tbl_cols)
+
+mutable = get_mutable()
     
 # --- App Layout ---
 st.title('Workout Logger')
@@ -96,9 +99,10 @@ with c1:
 ex = st.selectbox('Exercise', options = active_exercises + accessory_exercises + [i for i in ex_database['Name'].unique() if i not in active_exercises])
 with st.form(ex):
         
-    nset = st.session_state.sets[ex]
+    nset = len(mutable[ex])+1
+    norder = np.sum([len(i) for i in mutable.values()])+1
 
-    st.markdown(f'**{ex}** (*Set {nset}*)')
+    st.markdown(f'**{ex}** (*Set {nset}*) (*Exercise Nr. {norder}*)')
     
     c1, c2 = st.columns(2)
     with c1:
@@ -120,17 +124,21 @@ with st.form(ex):
     
     if submitted:
         
-        data_new = pd.DataFrame({'Exercise': [ex], 'Set': [nset], 'Weight': [weight],
-                                 'Distance': [distance], 'Reps': [reps], 'RPE': [RPE],
-                                 'Failure': [failure], 'Notes': [notes], 
-                                 'Order': [st.session_state.order], 'Rest': [to_s(timer)]})
-        data_new = data_new.merge(ex_database[['Name', 'page_id']].rename(columns = {'Name': 'Exercise'}),
-                                  on = 'Exercise', how = 'left', validate = 'many_to_one')
+        #TODO: remove these data_new statements
+        # data_new = pd.DataFrame({'Exercise': [ex], 'Set': [nset], 'Weight': [weight],
+        #                          'Distance': [distance], 'Reps': [reps], 'RPE': [RPE],
+        #                          'Failure': [failure], 'Notes': [notes], 
+        #                          'Order': [st.session_state.order], 'Rest': [to_s(timer)]})
+        # data_new = data_new.merge(ex_database[['Name', 'page_id']].rename(columns = {'Name': 'Exercise'}),
+        #                           on = 'Exercise', how = 'left', validate = 'many_to_one')
         
         st.session_state.defaults[ex].update({'Weight': weight, 'Distance': distance, 
                                               'Reps': reps, 'RPE': RPE})
-        
-        st.session_state.wo_tbl = pd.concat([st.session_state.wo_tbl, data_new[wo_tbl_cols]])
+                
+        mutable[ex].append({'Exercise': [ex], 'Set': [nset], 'Weight': [weight],
+                            'Distance': [distance], 'Reps': [reps], 'RPE': [RPE],
+                            'Failure': [failure], 'Notes': [notes], 
+                            'Order': [st.session_state.order], 'Rest': [to_s(timer)]})
         
         st.session_state.sets[ex] += 1
         st.session_state.order += 1
@@ -144,6 +152,16 @@ stop = st.button('Stop timer')
 if stop:
     st.session_state.end_time = None
     
+# --- Generate table for current workout ---
+
+wo_tbl = []
+for ex, data in mutable.items():
+    wo_tbl.append(pd.concat([pd.DataFrame(i) for i in data]))
+if len(wo_tbl) > 0:
+    wo_tbl = pd.concat(wo_tbl)
+else:
+    wo_tbl = pd.DataFrame(columns = wo_tbl_cols)
+    
 st.markdown('---')
 
 # --- Display Summary Statistics ---
@@ -153,7 +171,7 @@ agg_funcs = {'Set': lambda x: len(x), 'Reps': np.sum, 'RPE': np.mean}
 with col1:
     st.markdown('### This Workout')
     st.caption(datetime.datetime.strftime(wo_date, '%Y-%m-%d'))
-    st.table(st.session_state.wo_tbl.groupby('Exercise')['Set', 'Reps', 'RPE'].agg(agg_funcs).style.format(precision=1))
+    st.table(wo_tbl.groupby('Exercise')['Set', 'Reps', 'RPE'].agg(agg_funcs).style.format(precision=1))
     
 with col2:
     last_wo_date = ex_log.loc[ex_log['Date'].dt.date != wo_date, 'Date'].max()
@@ -165,7 +183,7 @@ with col2:
     
 # --- Display Summary Chart ---
 
-# log_agg = pd.concat([ex_log, st.session_state.wo_tbl])
+# log_agg = pd.concat([ex_log, wo_tbl])
 log_agg = ex_log.groupby(['Date', 'Exercise Name', 'Type'], as_index = False)['Reps'].sum()
 log_agg = log_agg.merge(corr_df, on = 'Type', how = 'left')
 log_agg['Reps'] = log_agg['Reps'] / log_agg['corr']
@@ -187,18 +205,22 @@ workout_rating = c2.slider('Workout Rating', min_value = 0, max_value = 10, step
 
 end_wo = st.button('Finish Workout')
 if end_wo:
-        push_notion(token = token, log_id = log_id, wo_id = workouts_id, 
-                    data = data_new, wo_date = wo_date, wo_notes = workout_notes,
-                    wo_rating = workout_rating)
-        
-        st.balloons() 
+    #TODO: check if this part works correctly
+    data_push = wo_tbl.merge(ex_database[['Name', 'page_id']].rename(columns = {'Name': 'Exercise'}),
+                             on = 'Exercise', how = 'left', validate = 'many_to_one')
+    
+    push_notion(token = token, log_id = log_id, wo_id = workouts_id, 
+                data = data_push, wo_date = wo_date, wo_notes = workout_notes,
+                wo_rating = workout_rating)
+    
+    st.balloons() 
 
 st.markdown('---')
 
 # --- Detailed Tables ---
 
 with st.expander('Check workout log'):
-    st.dataframe(st.session_state.wo_tbl)
+    st.dataframe(wo_tbl)
     
 with st.expander('Check last workout'):
     st.dataframe(last_wo)
