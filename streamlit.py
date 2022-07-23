@@ -9,6 +9,8 @@ from datetime import date
 from datetime import time
 import asyncio
 import altair as alt
+import matplotlib.pyplot as plt
+import seaborn as sns
 # import gspread
 
 def to_s(t):
@@ -43,6 +45,9 @@ notion = Client(auth=token)
 def get_notion(token, db_id, query_filter = None):
     db_raw = call_notion(token, db_id, query_filter)
     return(to_df(db_raw['results']))
+
+corr_df = pd.DataFrame([['Concentric', 1],  ['Eccentric', 3], ['Isometric', 2]], 
+                          columns = ['Type', 'corr'])
 
 # --- Import Datasets ---
 ##Use Parent Exercise column (relation) to get parent exercise name instead of Parent column
@@ -160,14 +165,15 @@ with col2:
     
 # --- Display Summary Chart ---
 
-log_agg = ex_log.groupby(['Date', 'Exercise Name'], as_index = False)['Reps'].sum()
+# log_agg = pd.concat([ex_log, st.session_state.wo_tbl])
+log_agg = ex_log.groupby(['Date', 'Exercise Name', 'Type'], as_index = False)['Reps'].sum()
+log_agg = log_agg.merge(corr_df, on = 'Type', how = 'left')
+log_agg['Reps'] = log_agg['Reps'] / log_agg['corr']
 
-c = alt.Chart(log_agg).mark_line(point=True).encode(
-  alt.Y('Reps:Q'),
-  x='Date:T',
-  color='Exercise Name:N'
-)
-st.altair_chart(c, use_container_width=True)
+fig, ax = plt.subplots()
+g = sns.lineplot(x = 'Date', y = 'Reps', data = log_agg, hue = 'Exercise Name', ax = ax, marker = 'o')
+g.legend(loc='upper left', framealpha=0.5)
+st.pyplot(fig)
 
 st.markdown('---')
 
