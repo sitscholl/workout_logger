@@ -75,6 +75,8 @@ if "end_time" not in st.session_state.keys():
     
 #### App layout
 st.title('Workout Logger')
+
+st.write(st.session_state.order)
        
 c1, c2 = st.columns([1, 4])
 with c1:
