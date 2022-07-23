@@ -140,9 +140,6 @@ with st.form(ex):
                             'Failure': [failure], 'Notes': [notes], 
                             'Order': [st.session_state.order], 'Rest': [to_s(timer)]})
         
-        st.session_state.sets[ex] += 1
-        st.session_state.order += 1
-        
         #Save the scheduled end time when the timer is started
         st.session_state.end_time = datetime.datetime.now() + datetime.timedelta(seconds = to_s(timer))
 
@@ -155,8 +152,11 @@ if stop:
 # --- Generate table for current workout ---
 
 wo_tbl = []
+
 for ex, data in mutable.items():
-    wo_tbl.append(pd.concat([pd.DataFrame(i) for i in data]))
+    if len(data) > 0:
+        wo_tbl.append(pd.concat([pd.DataFrame(i) for i in data]))
+    
 if len(wo_tbl) > 0:
     wo_tbl = pd.concat(wo_tbl)
 else:
