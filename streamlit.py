@@ -198,6 +198,7 @@ g.legend(loc='upper left', framealpha=0.5)
 st.pyplot(fig)
 
 test = log_agg.loc[log_agg['Exercise Name'] == ex]
+test['Date'] = test['Date'].dt.date
 st.dataframe(test)
 st.bar_chart(test[['Date', 'Reps']].set_index('Date'))
 
