@@ -157,6 +157,8 @@ st.markdown('---')
 
 # --- Display Summary Statistics ---
 
+agg_funcs = {'Set': lambda x: len(x), 'Reps': np.sum, 'RPE': np.mean}
+
 last_wo_date = ex_log.loc[(ex_log['Date'].dt.date != wo_date) & (ex_log['Category'] == 'Strength'), 'Date'].max()
 last_wo = ex_log.loc[ex_log['Date'] == last_wo_date, wo_tbl_cols]
 
@@ -164,7 +166,6 @@ wo_agg = wo_tbl.groupby('Exercise Name')['Set', 'Reps', 'RPE'].agg(agg_funcs)
 last_wo_agg = last_wo.groupby('Exercise Name')['Set', 'Reps', 'RPE'].agg(agg_funcs)
 
 col1, col2 = st.columns(2)
-agg_funcs = {'Set': lambda x: len(x), 'Reps': np.sum, 'RPE': np.mean}
 with col1:
     st.markdown('### This Workout')
     st.caption(datetime.datetime.strftime(wo_date, '%Y-%m-%d'))
