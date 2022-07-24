@@ -101,7 +101,6 @@ with st.form(ex):
     params = last_wo.loc[(last_wo['Exercise Name'] == ex) & (last_wo['Set'] == nset)]
     params = params.replace(0, np.nan).to_dict('records')[0]
     params['Reps'] = float(params['Reps'])
-    st.write(params)
     
     c1, c2 = st.columns(2)
     with c1:
@@ -121,16 +120,7 @@ with st.form(ex):
         
         submitted = st.form_submit_button('Submit')
     
-    if submitted:
-        
-        #TODO: remove these data_new statements
-        # data_new = pd.DataFrame({'Exercise': [ex], 'Set': [nset], 'Weight': [weight],
-        #                          'Distance': [distance], 'Reps': [reps], 'RPE': [RPE],
-        #                          'Failure': [failure], 'Notes': [notes], 
-        #                          'Order': [norder], 'Rest': [to_s(timer)]})
-        # data_new = data_new.merge(ex_database[['Name', 'page_id']].rename(columns = {'Name': 'Exercise'}),
-        #                           on = 'Exercise', how = 'left', validate = 'many_to_one')
-        
+    if submitted:     
         st.session_state.defaults[ex].update({'Weight': weight, 'Distance': distance, 
                                               'Reps': reps, 'RPE': RPE})
                 
@@ -167,8 +157,8 @@ st.markdown('---')
 
 agg_funcs = {'Set': lambda x: len(x), 'Reps': np.sum, 'RPE': np.mean}
 
-wo_agg = wo_tbl.groupby('Exercise Name')['Set', 'Reps', 'RPE'].agg(agg_funcs)
-last_wo_agg = last_wo.groupby('Exercise Name')['Set', 'Reps', 'RPE'].agg(agg_funcs)
+wo_agg = wo_tbl.groupby('Exercise Name')[['Set', 'Reps', 'RPE']].agg(agg_funcs)
+last_wo_agg = last_wo.groupby('Exercise Name')[['Set', 'Reps', 'RPE']].agg(agg_funcs)
 
 compare = last_wo_agg.join(wo_agg, lsuffix = '_last')
 st.dataframe(compare)
