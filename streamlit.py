@@ -84,8 +84,7 @@ st.title('Workout Logger')
        
 c1, c2, c3 = st.columns([1, 1, 3])
 with c1:
-    with st.expander('Change Date'):
-        wo_date = st.date_input('Workout Date', value = date.today())
+    wo_date = st.date_input('Workout Date', value = date.today())
 with c2:
     bw = st.number_input('Bodyweight', value = 0, step = 1)
         
