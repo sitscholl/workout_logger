@@ -172,7 +172,7 @@ with t1:
     st.bar_chart(test[['Date', 'Reps']].set_index('Date'))
     
 with t2:
-    st.dataframe(ex_log.loc[ex_log['Exercise Name'] == ex])
+    st.dataframe(ex_log.loc[ex_log['Exercise Name'] == ex, wo_tbl_cols])
     
 st.markdown('---')
 
