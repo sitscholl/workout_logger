@@ -4,15 +4,9 @@ from collections import defaultdict
 import pandas as pd
 from notion_client import Client
 import gspread
-
-
 import datetime
-woid = "89e88a749933453a827538bd7c7da0fd"
-token = 'secret_XDjIC2asAGztVnJ27vq0A6CraBTdpZgKISRxyGqOXjt'
-wo_date = datetime.date.today()
 
-#include workout notes and rating num as arguments
-def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating):
+def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodyweight):
     
     notion = Client(auth=token)
     
@@ -29,6 +23,7 @@ def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating):
             "Date": {"date": {"start": wo_date}},
             "Notes": {'rich_text':[{'type': 'text', 'text': {'content': wo_notes}}]},
             "Rating num": {"type": "number", "number": wo_rating},
+            "Bodyweight": {"type": "number", "number": bodyweight}
             }
         
         workout_push = notion.pages.create(parent={"database_id": wo_id}, properties=properties)
