@@ -113,6 +113,8 @@ with st.form(ex):
         timer = st.time_input('Timer', value = time(2, 30))
         
         submitted = st.form_submit_button('Submit')
+        
+    st.write(submitted)
     
     if submitted:
         
