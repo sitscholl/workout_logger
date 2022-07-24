@@ -82,10 +82,12 @@ mutable = get_mutable()
 # --- App Layout ---
 st.title('Workout Logger')
        
-c1, c2 = st.columns([1, 4])
+c1, c2, c3 = st.columns([1, 1, 3])
 with c1:
     with st.expander('Change Date'):
         wo_date = st.date_input('Workout Date', value = date.today())
+with c2:
+    bw = st.number_input('Bodyweight', value = 0, step = 1)
         
 last_wo_date = ex_log.loc[(ex_log['Date'].dt.date != wo_date) & (ex_log['Category'] == 'Strength'), 'Date'].max()
 last_wo = ex_log.loc[ex_log['Date'] == last_wo_date, wo_tbl_cols]
@@ -214,7 +216,7 @@ if end_wo:
     
     push_notion(token = token, log_id = log_id, wo_id = workouts_id, 
                 data = data_push, wo_date = wo_date, wo_notes = workout_notes,
-                wo_rating = workout_rating)
+                wo_rating = workout_rating, bodyweight = bw)
     mutable.clear()
     st.balloons() 
     
