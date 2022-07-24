@@ -85,6 +85,9 @@ c1, c2 = st.columns([1, 4])
 with c1:
     with st.expander('Change Date'):
         wo_date = st.date_input('Workout Date', value = date.today())
+        
+last_wo_date = ex_log.loc[(ex_log['Date'].dt.date != wo_date) & (ex_log['Category'] == 'Strength'), 'Date'].max()
+last_wo = ex_log.loc[ex_log['Date'] == last_wo_date, wo_tbl_cols]
             
 # --- Data Input Form ---    
 ex = st.selectbox('Exercise', options = active_exercises + accessory_exercises + [i for i in ex_database['Name'].unique() if i not in active_exercises])
@@ -94,6 +97,9 @@ with st.form(ex):
     norder = np.sum([len(i) for i in mutable.values()])+1
 
     st.markdown(f'**{ex}** (*Set {nset}*) (*Exercise Nr. {norder}*)')
+    
+    test = last_wo.loc[(last_wo['Exercise Name'] == ex) & (last_wo['Set'] == nset)]
+    st.write(test)
     
     c1, c2 = st.columns(2)
     with c1:
@@ -158,9 +164,6 @@ st.markdown('---')
 # --- Display Summary Statistics ---
 
 agg_funcs = {'Set': lambda x: len(x), 'Reps': np.sum, 'RPE': np.mean}
-
-last_wo_date = ex_log.loc[(ex_log['Date'].dt.date != wo_date) & (ex_log['Category'] == 'Strength'), 'Date'].max()
-last_wo = ex_log.loc[ex_log['Date'] == last_wo_date, wo_tbl_cols]
 
 wo_agg = wo_tbl.groupby('Exercise Name')['Set', 'Reps', 'RPE'].agg(agg_funcs)
 last_wo_agg = last_wo.groupby('Exercise Name')['Set', 'Reps', 'RPE'].agg(agg_funcs)
