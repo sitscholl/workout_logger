@@ -98,8 +98,8 @@ with st.form(ex):
 
     st.markdown(f'**{ex}** (*Set {nset}*) (*Exercise Nr. {norder}*)')
     
-    test = last_wo.loc[(last_wo['Exercise Name'] == ex) & (last_wo['Set'] == nset)]
-    st.write(test.to_dict())
+    test = last_wo.loc[(last_wo['Exercise Name'] == ex) & (last_wo['Set'] == nset)].to_dict('records')
+    st.write(test)
     
     c1, c2 = st.columns(2)
     with c1:
