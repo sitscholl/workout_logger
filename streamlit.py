@@ -8,8 +8,8 @@ import datetime
 from datetime import date
 from datetime import time
 import asyncio
-import matplotlib.pyplot as plt
-import seaborn as sns
+#import matplotlib.pyplot as plt
+#import seaborn as sns
 # import gspread
 
 def to_s(t):
@@ -192,14 +192,13 @@ log_agg = ex_log.groupby(['Date', 'Exercise Name', 'Type'], as_index = False)['R
 log_agg = log_agg.merge(corr_df, on = 'Type', how = 'left')
 log_agg['Reps'] = log_agg['Reps'] / log_agg['corr']
 
-fig, ax = plt.subplots()
-g = sns.lineplot(x = 'Date', y = 'Reps', data = log_agg, hue = 'Exercise Name', ax = ax, marker = 'o')
-g.legend(loc='upper left', framealpha=0.5)
-st.pyplot(fig)
+#fig, ax = plt.subplots()
+#g = sns.lineplot(x = 'Date', y = 'Reps', data = log_agg, hue = 'Exercise Name', ax = ax, marker = 'o')
+#g.legend(loc='upper left', framealpha=0.5)
+#st.pyplot(fig)
 
 test = log_agg.loc[log_agg['Exercise Name'] == ex]
 test['Date'] = test['Date'].dt.date.astype(str)
-st.dataframe(test)
 st.bar_chart(test[['Date', 'Reps']].set_index('Date'))
 
 st.markdown('---')
