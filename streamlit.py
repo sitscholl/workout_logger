@@ -212,6 +212,7 @@ if end_wo:
 clear_wo = st.button('Clear Workout')
 if clear_wo:
     mutable.clear()
+    st.experimental_rerun()
 
 st.markdown('---')
 
