@@ -70,7 +70,7 @@ active_exercises = ex_database.loc[ex_database['Status'].isin(['In Progress']), 
 accessory_exercises = ex_database.loc[ex_database['Status'].isin(['Accessory']), 'Name'].tolist()
 
 #params = {i: defaultdict(lambda : np.nan) for i in ex_database['Name'].unique()}
-params = {i: defaultdict(lambda : np.nan) for i in ['Reps', 'Weight', 'Distance', 'RPE']}
+params = defaultdict(lambda : np.nan)
 
 # --- Initialize persistent variables ---  
     
