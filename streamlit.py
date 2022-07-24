@@ -59,7 +59,7 @@ ex_database = get_notion(token, exercises_id)[['Parent', 'Name', 'Level', 'Type'
 ex_database = ex_database.sort_values(['Parent', 'Level', 'Name']).reset_index(drop = True)
 
 ex_log = get_notion(token, log_id, query_filter = {'property': 'Date', 'rollup': {'date': {'past_month': {}}}})
-#ex_log = ex_log[['Date', 'Exercise Name', 'Exercise', 'Set', 'Weight', 'Distance', 'Reps', 'RPE', 'Failure', 'Type', 'Parent', 'Group', 'Group 2', 'Status', 'Mesocycle', 'Notes', 'Name']].copy()
+ex_log = ex_log[['Date', 'Exercise Name', 'Exercise', 'Set', 'Weight', 'Distance', 'Reps', 'RPE', 'Failure', 'Type', 'Parent', 'Group', 'Group 2', 'Status', 'Mesocycle', 'Notes', 'Name', 'Category']].copy()
 ex_log['Date'] = pd.to_datetime(ex_log['Date'], format = '%Y-%m-%d')
 ex_log.sort_values(['Date', 'Exercise Name'], inplace = True)
 ex_log['Set_fill'] = ex_log.groupby(['Date', 'Exercise Name'])['Set'].cumcount()+1
@@ -164,9 +164,9 @@ with col1:
     st.markdown('### This Workout')
     st.caption(datetime.datetime.strftime(wo_date, '%Y-%m-%d'))
     st.table(wo_tbl.groupby('Exercise')['Set', 'Reps', 'RPE'].agg(agg_funcs).style.format(precision=1))
-st.dataframe(ex_log)
+
 with col2:
-    last_wo_date = ex_log.loc[(ex_log['Date'].dt.date != wo_date), 'Date'].max()
+    last_wo_date = ex_log.loc[(ex_log['Date'].dt.date != wo_date) & (ex_log['Category'] == 'Strength'), 'Date'].max()
     st.markdown('### Last Workout')
     st.caption(datetime.datetime.strftime(last_wo_date, '%Y-%m-%d'))
     
