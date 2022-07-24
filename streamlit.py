@@ -172,7 +172,9 @@ with t1:
     st.bar_chart(test[['Date', 'Reps']].set_index('Date'))
     
 with t2:
-    st.dataframe(ex_log.loc[ex_log['Exercise Name'] == ex, wo_tbl_cols])
+    ex_history = ex_log.loc[ex_log['Exercise Name'] == ex, ['Date', 'Set', 'Weight', 'Distance', 'Reps', 'RPE', 'Failure', 'Notes']]
+    ex_history.dropna(how = 'all', axis = 1)
+    st.dataframe(ex_history)
     
 st.markdown('---')
 
