@@ -165,7 +165,7 @@ agg_funcs = {'Set': lambda x: len(x), 'Reps': np.sum, 'RPE': np.mean}
 with col1:
     st.markdown('### This Workout')
     st.caption(datetime.datetime.strftime(wo_date, '%Y-%m-%d'))
-    st.table(wo_tbl.groupby('Exercise')['Set', 'Reps', 'RPE'].agg(agg_funcs).style.format(precision=1))
+    st.table(wo_tbl.groupby('Exercise Name')['Set', 'Reps', 'RPE'].agg(agg_funcs).style.format(precision=1))
 
 with col2:
     st.markdown('### Last Workout')
