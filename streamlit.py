@@ -211,13 +211,8 @@ if end_wo:
 
 clear_wo = st.button('Clear Workout')
 if clear_wo:
-    
-    st.write('Do you really want to delete the data for the current workout?')
-    confirm = st.button('Confirm')
-    
-    if confirm:
-        mutable.clear()
-        st.experimental_rerun()
+    mutable.clear()
+    st.experimental_rerun()
 
 st.markdown('---')
 
