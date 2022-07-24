@@ -168,6 +168,12 @@ last_wo_agg = last_wo.groupby('Exercise Name')['Set', 'Reps', 'RPE'].agg(agg_fun
 compare = last_wo_agg.join(wo_agg, lsuffix = '_last')
 st.dataframe(compare)
 
+cols = st.columns(len(compare))
+for nam, col in zip(compare.index, cols):
+    val = compare.loc[nam, 'Reps']
+    delta = compare.loc[nam, 'Reps'] - compare.loc[nam, 'Reps_last']
+    st.metric(label = nam, value = val, delta = delta)
+
 col1, col2 = st.columns(2)
 with col1:
     st.markdown('### This Workout')
