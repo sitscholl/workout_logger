@@ -47,7 +47,7 @@ def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating):
         row = data_fill.loc[i]
         # Create a new page in notion
         properties = {
-            "Name": {"title": [{"text": {"content": row['Exercise']}}]},
+            "Name": {"title": [{"text": {"content": row['Exercise Name']}}]},
             "Set": {"type": "number", "number": row['Set']},
             "Weight": {"type": "number", "number": row['Weight']},
             "Distance": {"type": "number", "number": row['Distance']},
