@@ -113,8 +113,6 @@ with st.form(ex):
         timer = st.time_input('Timer', value = time(2, 30))
         
         submitted = st.form_submit_button('Submit')
-        
-    st.write(submitted)
     
     if submitted:
         
@@ -208,6 +206,12 @@ if end_wo:
                 wo_rating = workout_rating)
     
     st.balloons() 
+    
+# --- Reset Workout ---
+
+clear_wo = st.button('Clear Workout')
+if clear_wo:
+    mutable.clear()
 
 st.markdown('---')
 
