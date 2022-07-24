@@ -199,7 +199,7 @@ st.pyplot(fig)
 
 test = log_agg.loc[log_agg['Exercise Name'] == ex]
 st.dataframe(test)
-st.bar_chart(test[['Date', 'Reps']])
+st.bar_chart(test[['Date', 'Reps']].set_index('Date')
 
 st.markdown('---')
 
