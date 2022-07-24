@@ -170,9 +170,14 @@ st.dataframe(compare)
 
 cols = st.columns(len(compare))
 for nam, col in zip(compare.index, cols):
-    val = compare.loc[nam, 'Reps']
-    delta = compare.loc[nam, 'Reps'] - compare.loc[nam, 'Reps_last']
-    st.metric(label = nam, value = val, delta = delta)
+    
+    with col:
+        val = compare.loc[nam, 'Reps']
+        delta = compare.loc[nam, 'Reps'] - compare.loc[nam, 'Reps_last']
+        
+        val = val if val == val else 0
+        delta = delta if delta == delta else 0
+        st.metric(label = nam, value = val, delta = delta)
 
 col1, col2 = st.columns(2)
 with col1:
