@@ -154,7 +154,24 @@ st.markdown('---')
 
 # --- Exercise History ---
 
-t1, t2 = st.tabs(['Plot', 'Data'])
+t1, t2 = st.tabs(["📈 Chart", "🗃 Data"])
+
+with t1:
+    # log_agg = pd.concat([ex_log, wo_tbl])
+    log_agg = ex_log.groupby(['Date', 'Exercise Name', 'Type'], as_index = False)['Reps'].sum()
+    log_agg = log_agg.merge(corr_df, on = 'Type', how = 'left')
+    log_agg['Reps'] = log_agg['Reps'] / log_agg['corr']
+
+    #fig, ax = plt.subplots()
+    #g = sns.lineplot(x = 'Date', y = 'Reps', data = log_agg, hue = 'Exercise Name', ax = ax, marker = 'o')
+    #g.legend(loc='upper left', framealpha=0.5)
+    #st.pyplot(fig)
+
+    test = log_agg.loc[log_agg['Exercise Name'] == ex]
+    test['Date'] = test['Date'].dt.date.astype(str)
+    st.bar_chart(test[['Date', 'Reps']].set_index('Date'))
+    
+st.markdown('---')
 
 # --- Display Summary Metrics ---
 
@@ -189,22 +206,6 @@ with col2:
     st.caption(datetime.datetime.strftime(last_wo_date, '%Y-%m-%d'))
     st.table(last_wo_agg.style.format(precision=1))
     
-# --- Display Summary Chart ---
-
-# log_agg = pd.concat([ex_log, wo_tbl])
-log_agg = ex_log.groupby(['Date', 'Exercise Name', 'Type'], as_index = False)['Reps'].sum()
-log_agg = log_agg.merge(corr_df, on = 'Type', how = 'left')
-log_agg['Reps'] = log_agg['Reps'] / log_agg['corr']
-
-#fig, ax = plt.subplots()
-#g = sns.lineplot(x = 'Date', y = 'Reps', data = log_agg, hue = 'Exercise Name', ax = ax, marker = 'o')
-#g.legend(loc='upper left', framealpha=0.5)
-#st.pyplot(fig)
-
-test = log_agg.loc[log_agg['Exercise Name'] == ex]
-test['Date'] = test['Date'].dt.date.astype(str)
-st.bar_chart(test[['Date', 'Reps']].set_index('Date'))
-
 st.markdown('---')
 
 # --- Workout Level Input ---
