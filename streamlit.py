@@ -165,6 +165,9 @@ last_wo = ex_log.loc[ex_log['Date'] == last_wo_date, wo_tbl_cols]
 wo_agg = wo_tbl.groupby('Exercise Name')['Set', 'Reps', 'RPE'].agg(agg_funcs)
 last_wo_agg = last_wo.groupby('Exercise Name')['Set', 'Reps', 'RPE'].agg(agg_funcs)
 
+compare = last_wo_agg.join(wo_agg)
+st.dataframe(compare)
+
 col1, col2 = st.columns(2)
 with col1:
     st.markdown('### This Workout')
