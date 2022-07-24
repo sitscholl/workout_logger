@@ -98,15 +98,16 @@ with st.form(ex):
 
     st.markdown(f'**{ex}** (*Set {nset}*) (*Exercise Nr. {norder}*)')
     
-    test = last_wo.loc[(last_wo['Exercise Name'] == ex) & (last_wo['Set'] == nset)].to_dict('records')
-    st.write(test)
+    params = last_wo.loc[(last_wo['Exercise Name'] == ex) & (last_wo['Set'] == nset)]
+    params = params.replace(0, np.nan).to_dict('records')[0]
+    st.write(params)
     
     c1, c2 = st.columns(2)
     with c1:
-        weight = st.number_input('Weight', value = st.session_state.defaults[ex]['Weight'], step = .5)
-        distance = st.number_input('Distance', value = st.session_state.defaults[ex]['Distance'], step = .5)
-        reps = st.number_input('Reps', value = st.session_state.defaults[ex]['Reps'], step = 1.0)
-        RPE = st.number_input('RPE', value = st.session_state.defaults[ex]['RPE'], min_value = 0.0, max_value = 10.0, step = .5)        
+        weight = st.number_input('Weight', value = params['Weight'], step = .5)
+        distance = st.number_input('Distance', value = params['Distance'], step = .5)
+        reps = st.number_input('Reps', value = params['Reps'], step = 1.0)
+        RPE = st.number_input('RPE', value = params['RPE'], min_value = 0.0, max_value = 10.0, step = .5)        
         
     with c2:
         st.write('')
