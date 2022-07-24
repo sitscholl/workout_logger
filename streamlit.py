@@ -100,6 +100,7 @@ with st.form(ex):
     
     params = last_wo.loc[(last_wo['Exercise Name'] == ex) & (last_wo['Set'] == nset)]
     params = params.replace(0, np.nan).to_dict('records')[0]
+    params['Reps'] = float(params['Reps'])
     st.write(params)
     
     c1, c2 = st.columns(2)
