@@ -160,17 +160,20 @@ st.markdown('---')
 last_wo_date = ex_log.loc[(ex_log['Date'].dt.date != wo_date) & (ex_log['Category'] == 'Strength'), 'Date'].max()
 last_wo = ex_log.loc[ex_log['Date'] == last_wo_date, wo_tbl_cols]
 
+wo_agg = wo_tbl.groupby('Exercise Name')['Set', 'Reps', 'RPE'].agg(agg_funcs)
+last_wo_agg = last_wo.groupby('Exercise Name')['Set', 'Reps', 'RPE'].agg(agg_funcs)
+
 col1, col2 = st.columns(2)
 agg_funcs = {'Set': lambda x: len(x), 'Reps': np.sum, 'RPE': np.mean}
 with col1:
     st.markdown('### This Workout')
     st.caption(datetime.datetime.strftime(wo_date, '%Y-%m-%d'))
-    st.table(wo_tbl.groupby('Exercise Name')['Set', 'Reps', 'RPE'].agg(agg_funcs).style.format(precision=1))
+    st.table(wo_agg.style.format(precision=1))
 
 with col2:
     st.markdown('### Last Workout')
     st.caption(datetime.datetime.strftime(last_wo_date, '%Y-%m-%d'))
-    st.table(last_wo.groupby('Exercise Name')['Set', 'Reps', 'RPE'].agg(agg_funcs).style.format(precision=1))
+    st.table(last_wo_agg.style.format(precision=1))
     
 # --- Display Summary Chart ---
 
