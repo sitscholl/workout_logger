@@ -215,8 +215,10 @@ if end_wo:
     push_notion(token = token, log_id = log_id, wo_id = workouts_id, 
                 data = data_push, wo_date = wo_date, wo_notes = workout_notes,
                 wo_rating = workout_rating)
-    
+    mutable.clear()
     st.balloons() 
+    
+    st.experimental_rerun()
     
 # --- Reset Workout ---
 
