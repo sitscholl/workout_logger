@@ -51,7 +51,7 @@ def get_mutable():
 
 corr_df = pd.DataFrame([['Concentric', 1],  ['Eccentric', 3], ['Isometric', 2]], 
                           columns = ['Type', 'corr'])
-wo_tbl_cols = ['Order', 'Exercise', 'Set', 'Weight', 'Distance', 'Reps', 'RPE', 'Failure', 'Notes']
+wo_tbl_cols = ['Order', 'Exercise Name', 'Set', 'Weight', 'Distance', 'Reps', 'RPE', 'Failure', 'Notes']
 
 # --- Import Datasets ---
 #TODO: Use Parent Exercise column (relation) to get parent exercise name instead of Parent column
@@ -126,7 +126,7 @@ with st.form(ex):
         st.session_state.defaults[ex].update({'Weight': weight, 'Distance': distance, 
                                               'Reps': reps, 'RPE': RPE})
                 
-        mutable[ex].append({'Exercise': [ex], 'Set': [nset], 'Weight': [weight],
+        mutable[ex].append({'Exercise Name': [ex], 'Set': [nset], 'Weight': [weight],
                             'Distance': [distance], 'Reps': [reps], 'RPE': [RPE],
                             'Failure': [failure], 'Notes': [notes], 
                             'Order': [norder], 'Rest': [to_s(timer)]})
@@ -197,8 +197,8 @@ workout_rating = c2.slider('Workout Rating', min_value = 0, max_value = 10, step
 end_wo = st.button('Finish Workout')
 if end_wo:
     #TODO: check if this part works correctly
-    data_push = wo_tbl.merge(ex_database[['Name', 'page_id']].rename(columns = {'Name': 'Exercise'}),
-                             on = 'Exercise', how = 'left', validate = 'many_to_one')
+    data_push = wo_tbl.merge(ex_database[['Name', 'page_id']].rename(columns = {'Name': 'Exercise Name'}),
+                             on = 'Exercise Name', how = 'left', validate = 'many_to_one')
     
     push_notion(token = token, log_id = log_id, wo_id = workouts_id, 
                 data = data_push, wo_date = wo_date, wo_notes = workout_notes,
