@@ -171,6 +171,9 @@ with t1:
     test['Date'] = test['Date'].dt.date.astype(str)
     st.bar_chart(test[['Date', 'Reps']].set_index('Date'))
     
+with t2:
+    st.dataframe(ex_log.loc[ex_log['Exercise Name'] == ex])
+    
 st.markdown('---')
 
 # --- Display Summary Metrics ---
