@@ -152,6 +152,10 @@ else:
     
 st.markdown('---')
 
+# --- Exercise History ---
+
+t1, t2 = st.tabs(['Plot', 'Data'])
+
 # --- Display Summary Metrics ---
 
 agg_funcs = {'Set': lambda x: len(x), 'Reps': np.sum, 'RPE': np.mean}
