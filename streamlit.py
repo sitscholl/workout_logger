@@ -59,6 +59,7 @@ ex_database = get_notion(token, exercises_id)[['Parent', 'Name', 'Level', 'Type'
 ex_database = ex_database.sort_values(['Parent', 'Level', 'Name']).reset_index(drop = True)
 
 ex_log = get_notion(token, log_id, query_filter = {'property': 'Date', 'rollup': {'date': {'past_month': {}}}})
+ex_log = ex_log.copy()
 ex_log['Date'] = pd.to_datetime(ex_log['Date'], format = '%Y-%m-%d')
 ex_log.sort_values(['Date', 'Exercise Name'], inplace = True)
 ex_log['Set_fill'] = ex_log.groupby(['Date', 'Exercise Name'])['Set'].cumcount()+1
