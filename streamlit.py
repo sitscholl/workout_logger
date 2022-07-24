@@ -8,7 +8,6 @@ import datetime
 from datetime import date
 from datetime import time
 import asyncio
-import altair as alt
 import matplotlib.pyplot as plt
 import seaborn as sns
 # import gspread
@@ -55,7 +54,7 @@ corr_df = pd.DataFrame([['Concentric', 1],  ['Eccentric', 3], ['Isometric', 2]],
 wo_tbl_cols = ['Order', 'Exercise', 'Set', 'Weight', 'Distance', 'Reps', 'RPE', 'Failure', 'Notes']
 
 # --- Import Datasets ---
-##Use Parent Exercise column (relation) to get parent exercise name instead of Parent column
+#TODO: Use Parent Exercise column (relation) to get parent exercise name instead of Parent column
 ex_database = get_notion(token, exercises_id)[['Parent', 'Name', 'Level', 'Type', 'Group', 'Group 2', 'Category', 'Muscles', 'Status', 'page_id']]
 ex_database = ex_database.sort_values(['Parent', 'Level', 'Name']).reset_index(drop = True)
 
@@ -70,14 +69,7 @@ ex_log = ex_log.sort_values(['Date', 'Exercise Name', 'Set']).reset_index(drop =
 active_exercises = ex_database.loc[ex_database['Status'].isin(['In Progress']), 'Name'].tolist()
 accessory_exercises = ex_database.loc[ex_database['Status'].isin(['Accessory']), 'Name'].tolist()
 
-# --- Initialize persistent variables ---
-if "sets" not in st.session_state.keys():
-    set_dict = {i: 1 for i in ex_database['Name'].unique()}
-    st.session_state.sets = set_dict
-    
-if 'order' not in st.session_state.keys():
-    st.session_state.order = 1
-    
+# --- Initialize persistent variables ---  
 if "defaults" not in st.session_state.keys():
     ex_defaults = {i: defaultdict(lambda : np.nan) for i in ex_database['Name'].unique()}
     st.session_state.defaults = ex_defaults
@@ -128,7 +120,7 @@ with st.form(ex):
         # data_new = pd.DataFrame({'Exercise': [ex], 'Set': [nset], 'Weight': [weight],
         #                          'Distance': [distance], 'Reps': [reps], 'RPE': [RPE],
         #                          'Failure': [failure], 'Notes': [notes], 
-        #                          'Order': [st.session_state.order], 'Rest': [to_s(timer)]})
+        #                          'Order': [norder], 'Rest': [to_s(timer)]})
         # data_new = data_new.merge(ex_database[['Name', 'page_id']].rename(columns = {'Name': 'Exercise'}),
         #                           on = 'Exercise', how = 'left', validate = 'many_to_one')
         
@@ -138,7 +130,7 @@ with st.form(ex):
         mutable[ex].append({'Exercise': [ex], 'Set': [nset], 'Weight': [weight],
                             'Distance': [distance], 'Reps': [reps], 'RPE': [RPE],
                             'Failure': [failure], 'Notes': [notes], 
-                            'Order': [st.session_state.order], 'Rest': [to_s(timer)]})
+                            'Order': [norder], 'Rest': [to_s(timer)]})
         
         #Save the scheduled end time when the timer is started
         st.session_state.end_time = datetime.datetime.now() + datetime.timedelta(seconds = to_s(timer))
