@@ -174,7 +174,7 @@ with t1:
 with t2:
     ex_history = ex_log.loc[ex_log['Exercise Name'] == ex, ['Date', 'Set', 'Weight', 'Distance', 'Reps', 'RPE', 'Failure', 'Notes']]
     ex_history = ex_history.replace(0.0, np.nan)
-    ex_history.dropna(how = 'all', axis = 1)
+    ex_history.dropna(how = 'all', axis = 1, inplace = True)
     ex_history['Date'] = ex_history['Date'].dt.date
     st.dataframe(ex_history.style.format(precision=1))
     
