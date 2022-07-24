@@ -36,7 +36,7 @@ log_id = st.secrets['log_id']
 exercises_id = st.secrets['exercises_id']
 workouts_id = st.secrets['workouts_id']
 
-google_credentials = st.secrets['g_creds']
+#google_credentials = st.secrets['g_creds']
 
 notion = Client(auth=token)
 
@@ -69,10 +69,10 @@ ex_log = ex_log.sort_values(['Date', 'Exercise Name', 'Set']).reset_index(drop =
 active_exercises = ex_database.loc[ex_database['Status'].isin(['In Progress']), 'Name'].tolist()
 accessory_exercises = ex_database.loc[ex_database['Status'].isin(['Accessory']), 'Name'].tolist()
 
+#params = {i: defaultdict(lambda : np.nan) for i in ex_database['Name'].unique()}
+params = {i: defaultdict(lambda : np.nan) for i in ['Reps', 'Weight', 'Distance', 'RPE']}
+
 # --- Initialize persistent variables ---  
-if "defaults" not in st.session_state.keys():
-    ex_defaults = {i: defaultdict(lambda : np.nan) for i in ex_database['Name'].unique()}
-    st.session_state.defaults = ex_defaults
     
 if "end_time" not in st.session_state.keys():
     st.session_state.end_time = None
@@ -99,9 +99,9 @@ with st.form(ex):
 
     st.markdown(f'**{ex}** (*Set {nset}*) (*Exercise Nr. {norder}*)')
     
-    params = last_wo.loc[(last_wo['Exercise Name'] == ex) & (last_wo['Set'] == nset)]
-    params = params.replace(0, np.nan).to_dict('records')[0]
-    params['Reps'] = float(params['Reps'])
+    #params = last_wo.loc[(last_wo['Exercise Name'] == ex) & (last_wo['Set'] == nset)]
+    #params = params.replace(0, np.nan).to_dict('records')[0]
+    #params['Reps'] = float(params['Reps'])
     
     c1, c2 = st.columns(2)
     with c1:
@@ -121,10 +121,7 @@ with st.form(ex):
         
         submitted = st.form_submit_button('Submit')
     
-    if submitted:     
-        st.session_state.defaults[ex].update({'Weight': weight, 'Distance': distance, 
-                                              'Reps': reps, 'RPE': RPE})
-                
+    if submitted:                
         mutable[ex].append({'Exercise Name': [ex], 'Set': [nset], 'Weight': [weight],
                             'Distance': [distance], 'Reps': [reps], 'RPE': [RPE],
                             'Failure': [failure], 'Notes': [notes], 
@@ -154,7 +151,7 @@ else:
     
 st.markdown('---')
 
-# --- Display Summary Statistics ---
+# --- Display Summary Metrics ---
 
 agg_funcs = {'Set': lambda x: len(x), 'Reps': np.sum, 'RPE': np.mean}
 
@@ -162,7 +159,6 @@ wo_agg = wo_tbl.groupby('Exercise Name')[['Set', 'Reps', 'RPE']].agg(agg_funcs)
 last_wo_agg = last_wo.groupby('Exercise Name')[['Set', 'Reps', 'RPE']].agg(agg_funcs)
 
 compare = last_wo_agg.join(wo_agg, lsuffix = '_last')
-st.dataframe(compare)
 
 cols = st.columns(len(compare))
 for nam, col in zip(compare.index, cols):
@@ -175,6 +171,8 @@ for nam, col in zip(compare.index, cols):
         delta = delta if delta == delta else None
         st.metric(label = nam, value = val, delta = delta)
 
+# --- Display Summary Tables ---
+        
 col1, col2 = st.columns(2)
 with col1:
     st.markdown('### This Workout')
