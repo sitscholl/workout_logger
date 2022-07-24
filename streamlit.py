@@ -197,6 +197,9 @@ g = sns.lineplot(x = 'Date', y = 'Reps', data = log_agg, hue = 'Exercise Name', 
 g.legend(loc='upper left', framealpha=0.5)
 st.pyplot(fig)
 
+test = log_agg.loc[log_agg['Exercise Name'] == ex]
+st.dataframe(test)
+
 st.markdown('---')
 
 # --- Workout Level Input ---
