@@ -12,7 +12,7 @@ token = 'secret_XDjIC2asAGztVnJ27vq0A6CraBTdpZgKISRxyGqOXjt'
 wo_date = datetime.date.today()
 
 #include workout notes and rating num as arguments
-def push_notion(token, log_id, wo_id, data, wo_date):
+def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating):
     
     notion = Client(auth=token)
     
@@ -26,8 +26,9 @@ def push_notion(token, log_id, wo_id, data, wo_date):
         #Create workout entry
         properties = {
             "Name": {"title": [{"text": {"content": 'Strength'}}]},
-            "Date": {"date": {"start": wo_date}}
-            #"Notes": {'rich_text':[{'type': 'text', 'text': {'content': workout_notes}}]}
+            "Date": {"date": {"start": wo_date}},
+            "Notes": {'rich_text':[{'type': 'text', 'text': {'content': wo_notes}}]},
+            "Rating num": {"type": "number", "number": wo_rating},
             }
         
         workout_push = notion.pages.create(parent={"database_id": wo_id}, properties=properties)
