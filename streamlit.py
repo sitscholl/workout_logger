@@ -49,6 +49,10 @@ def get_notion(token, db_id, query_filter = None):
 def get_mutable():
     return defaultdict(list)
 
+@st.cache(allow_output_mutation = True)
+def get_end_time():
+    return [None]
+
 corr_df = pd.DataFrame([['Concentric', 1],  ['Eccentric', 3], ['Isometric', 2]], 
                           columns = ['Type', 'corr'])
 wo_tbl_cols = ['Order', 'Exercise Name', 'Set', 'Weight', 'Distance', 'Reps', 'RPE', 'Failure', 'Notes']
@@ -78,6 +82,7 @@ if "end_time" not in st.session_state.keys():
     st.session_state.end_time = None
 
 mutable = get_mutable()
+end_time = get_end_time()
     
 # --- App Layout ---
 st.title('Workout Logger')
@@ -129,13 +134,13 @@ with st.form(ex):
                             'Order': [norder], 'Rest': [to_s(timer)]})
         
         #Save the scheduled end time when the timer is started
-        st.session_state.end_time = datetime.datetime.now() + datetime.timedelta(seconds = to_s(timer))
+        end_time[0] = datetime.datetime.now() + datetime.timedelta(seconds = to_s(timer))
 
 ph = st.empty()
 stop = st.button('Stop timer')
 
 if stop:
-    st.session_state.end_time = None
+    end_time[0] = None
     
 # --- Generate table for current workout ---
 
@@ -242,6 +247,7 @@ if end_wo:
 clear_wo = st.button('Clear Workout')
 if clear_wo:
     mutable.clear()
+    end_time[0] = None
     st.experimental_rerun()
 
 st.markdown('---')
@@ -256,11 +262,11 @@ with st.expander('Check last workout'):
       
 # --- Timer ---
     
-if (st.session_state.end_time != None) and (st.session_state.end_time > datetime.datetime.now()):
+if (end_time[0] != None) and (end_time[0] > datetime.datetime.now()):
     #Get remaining seconds to scheduled end time
-    t = int((st.session_state.end_time - datetime.datetime.now()).total_seconds())
+    t = int((end_time[0] - datetime.datetime.now()).total_seconds())
     
     asyncio.run(start_timer(ph, t))
     
     ph.empty()
-    st.session_state.end_time = None
+    end_time[0] = None
