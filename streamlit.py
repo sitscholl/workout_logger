@@ -53,6 +53,10 @@ def get_mutable():
 def get_end_time():
     return [None]
 
+@st.cache(allow_output_mutation = True)
+def get_bodyweight():
+    return [np.nan]
+
 corr_df = pd.DataFrame([['Concentric', 1],  ['Eccentric', 3], ['Isometric', 2]], 
                           columns = ['Type', 'corr'])
 wo_tbl_cols = ['Order', 'Exercise Name', 'Set', 'Weight', 'Distance', 'Reps', 'RPE', 'Failure', 'Notes']
@@ -83,6 +87,7 @@ if "end_time" not in st.session_state.keys():
 
 mutable = get_mutable()
 end_time = get_end_time()
+bodyweight = get_bodyweight()
     
 # --- App Layout ---
 st.title('Workout Logger')
@@ -91,7 +96,10 @@ c1, c2, c3 = st.columns([1, 1, 3])
 with c1:
     wo_date = st.date_input('Workout Date', value = date.today())
 with c2:
-    bw = st.number_input('Bodyweight', value = 0, step = 1)
+    bw_default = bodyweight[0] if bodyweight[0] == bodyweight[0] else np.nan
+    bw = st.number_input('Bodyweight', value = bw_default, step = 1.0)
+    
+    bodyweight[0] = bw
         
 last_wo_date = ex_log.loc[(ex_log['Date'].dt.date != wo_date) & (ex_log['Category'] == 'Strength'), 'Date'].max()
 last_wo = ex_log.loc[ex_log['Date'] == last_wo_date, wo_tbl_cols]
