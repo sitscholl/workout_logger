@@ -98,8 +98,6 @@ with c1:
 with c2:
     bw_default = bodyweight[0] if bodyweight[0] == bodyweight[0] else np.nan
     bw = st.number_input('Bodyweight', value = bw_default, step = 1.0, on_change = get_bodyweight, args = (bw))
-    
-    bodyweight[0] = bw
         
 last_wo_date = ex_log.loc[(ex_log['Date'].dt.date != wo_date) & (ex_log['Category'] == 'Strength'), 'Date'].max()
 last_wo = ex_log.loc[ex_log['Date'] == last_wo_date, wo_tbl_cols]
