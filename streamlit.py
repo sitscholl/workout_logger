@@ -54,8 +54,8 @@ def get_end_time():
     return [None]
 
 @st.cache(allow_output_mutation = True)
-def get_bodyweight():
-    return [np.nan]
+def get_bodyweight(x = np.nan):
+    return [x]
 
 corr_df = pd.DataFrame([['Concentric', 1],  ['Eccentric', 3], ['Isometric', 2]], 
                           columns = ['Type', 'corr'])
@@ -97,7 +97,7 @@ with c1:
     wo_date = st.date_input('Workout Date', value = date.today())
 with c2:
     bw_default = bodyweight[0] if bodyweight[0] == bodyweight[0] else np.nan
-    bw = st.number_input('Bodyweight', value = bw_default, step = 1.0)
+    bw = st.number_input('Bodyweight', value = bw_default, step = 1.0, on_change = get_bodyweight, args = (bw))
     
     bodyweight[0] = bw
         
