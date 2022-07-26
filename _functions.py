@@ -3,7 +3,7 @@ import warnings
 from collections import defaultdict
 import pandas as pd
 from notion_client import Client
-import gspread
+#import gspread
 import datetime
 
 def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodyweight):
@@ -199,9 +199,6 @@ def to_df(results):
                     
                 else:
                     ctype3 = props[col][ctype][ctype2]
-                    
-                    print(col)
-                    print(props[col][ctype])
 
                     if len(ctype3) > 1:
                         sys.exit('Len of ctype 3 is greater than 1! Check for potential errors')
@@ -230,6 +227,12 @@ def to_df(results):
                     if ctype3 == 'title':
                         ctype4 = props[col][ctype][ctype2][0][ctype3][0]['type']
                         val = props[col][ctype][ctype2][0][ctype3][0][ctype4]['content']
+                        
+                    if ctype3 == 'date':
+                        if props[col][ctype][ctype2][0][ctype3] == None:
+                            val = None
+                        else:
+                            val = props[col][ctype][ctype2][0][ctype3]['start']
                
             d[col].append(val)
     df = pd.DataFrame(d)
