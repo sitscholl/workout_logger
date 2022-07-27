@@ -243,10 +243,10 @@ st.markdown('---')
 # --- Detailed Tables ---
 
 with st.expander('Check workout log'):
-    st.dataframe(wo_tbl.style.format(precision=1))
+    st.dataframe(wo_tbl.sort_values('Order').style.format(precision=1))
     
 with st.expander('Check last workout'):
-    st.dataframe(last_wo.style.format(precision=1))
+    st.dataframe(last_wo.sort_values('Order').style.format(precision=1))
     
 # --- Exercise History ---
 
