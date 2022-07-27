@@ -179,9 +179,10 @@ for nam, col in zip(compare.index, cols[1:]):
         val = compare.loc[nam, 'Reps']
         delta = compare.loc[nam, 'Reps'] - compare.loc[nam, 'Reps_last']
         
+        label = ''.join([x[0].upper() for x in nam.split(' ')])
         val = val if val == val else 0
         delta = delta if delta == delta else None
-        st.metric(label = nam, value = val, delta = delta)
+        st.metric(label = label, value = val, delta = delta)
 
 # --- Display Summary Tables ---
         
