@@ -107,8 +107,10 @@ st.dataframe(last_wo)
 
 norder = np.sum([len(i) for i in mutable.values()])+1
 ex_default = last_wo.loc[last_wo['Order'].astype(int) == norder, 'Exercise Name']
-st.write(ex_default)
-ex = st.selectbox('Exercise', options = active_exercises + accessory_exercises + [i for i in ex_database['Name'].unique() if i not in active_exercises])
+ex_options = active_exercises + accessory_exercises + [i for i in ex_database['Name'].unique() if i not in active_exercises]
+ex = st.selectbox('Exercise', 
+                  options = ex_options,
+                  index = ex_options.index(ex_default))
 with st.form(ex):
         
     nset = len(mutable[ex])+1
