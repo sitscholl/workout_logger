@@ -130,7 +130,7 @@ with st.form(ex):
         notes = st.text_input('Notes')
         timer = st.time_input('Timer', value = time(2, 30))
         
-        submitted = st.form_submit_button('Submit')
+    submitted = st.form_submit_button(f'Submit {ex}')
     
     if submitted:                
         mutable[ex].append({'Exercise Name': [ex], 'Set': [nset], 'Weight': [weight],
