@@ -97,7 +97,7 @@ with c1:
     wo_date = st.date_input('Workout Date', value = date.today())
 with c2:
     bw = st.number_input('Bodyweight', step = 1.0, value = np.nan)
-    
+    st.write(bw)
     if bw == bw:
         bodyweight = bw
     
