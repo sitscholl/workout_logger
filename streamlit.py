@@ -96,8 +96,10 @@ c1, c2, c3 = st.columns([1, 1, 3])
 with c1:
     wo_date = st.date_input('Workout Date', value = date.today())
 with c2:
-    bw = st.number_input('Bodyweight', step = 1.0)
-    bodyweight = bw
+    bw = st.number_input('Bodyweight', step = 1.0, value = np.nan)
+    
+    if bw == bw:
+        bodyweight = bw
     
 st.metric('Bodyweight', bodyweight)
         
@@ -180,7 +182,7 @@ with t1:
     #g.legend(loc='upper left', framealpha=0.5)
     #st.pyplot(fig)
 
-    test = log_agg.loc[log_agg['Exercise Name'] == ex]
+    test = log_agg.loc[log_agg['Exercise Name'] == ex].copy()
     test['Date'] = test['Date'].dt.date.astype(str)
     st.bar_chart(test[['Date', 'Reps']].set_index('Date'))
     
