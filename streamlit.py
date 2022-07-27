@@ -97,9 +97,7 @@ with c2:
 
     if bw == bw:
         bodyweight[0] = bw
-    
-st.metric('Bodyweight', bodyweight[0])
-        
+      
 last_wo_date = ex_log.loc[(ex_log['Date'].dt.date != wo_date) & (ex_log['Category'] == 'Strength'), 'Date'].max()
 last_wo = ex_log.loc[ex_log['Date'] == last_wo_date, wo_tbl_cols]
             
@@ -173,9 +171,10 @@ last_wo_agg = last_wo.groupby('Exercise Name')[['Set', 'Reps', 'RPE']].agg(agg_f
 
 compare = last_wo_agg.join(wo_agg, lsuffix = '_last')
 
-cols = st.columns(len(compare))
-for nam, col in zip(compare.index, cols):
-    
+cols = st.columns(len(compare)+1)
+cols[0].metric('Bodyweight', bodyweight[0])
+
+for nam, col in zip(compare.index[1:], cols):
     with col:
         val = compare.loc[nam, 'Reps']
         delta = compare.loc[nam, 'Reps'] - compare.loc[nam, 'Reps_last']
