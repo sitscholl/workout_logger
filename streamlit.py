@@ -55,7 +55,7 @@ def get_end_time():
 
 @st.cache(allow_output_mutation = True)
 def get_bodyweight():
-    return [None]
+    return [np.nan]
 
 corr_df = pd.DataFrame([['Concentric', 1],  ['Eccentric', 3], ['Isometric', 2]], 
                           columns = ['Type', 'corr'])
