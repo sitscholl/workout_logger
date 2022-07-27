@@ -82,9 +82,6 @@ params = defaultdict(lambda : np.nan)
 
 # --- Initialize persistent variables ---  
     
-if "end_time" not in st.session_state.keys():
-    st.session_state.end_time = None
-
 mutable = get_mutable()
 end_time = get_end_time()
 bodyweight = get_bodyweight()
@@ -167,34 +164,6 @@ else:
     
 st.markdown('---')
 
-# --- Exercise History ---
-
-t1, t2 = st.tabs(["📈 Chart", "🗃 Data"])
-
-with t1:
-    # log_agg = pd.concat([ex_log, wo_tbl])
-    log_agg = ex_log.groupby(['Date', 'Exercise Name', 'Type'], as_index = False)['Reps'].sum()
-    log_agg = log_agg.merge(corr_df, on = 'Type', how = 'left')
-    log_agg['Reps'] = log_agg['Reps'] / log_agg['corr']
-
-    #fig, ax = plt.subplots()
-    #g = sns.lineplot(x = 'Date', y = 'Reps', data = log_agg, hue = 'Exercise Name', ax = ax, marker = 'o')
-    #g.legend(loc='upper left', framealpha=0.5)
-    #st.pyplot(fig)
-
-    test = log_agg.loc[log_agg['Exercise Name'] == ex].copy()
-    test['Date'] = test['Date'].dt.date.astype(str)
-    st.bar_chart(test[['Date', 'Reps']].set_index('Date'))
-    
-with t2:
-    ex_history = ex_log.loc[ex_log['Exercise Name'] == ex, ['Date', 'Set', 'Weight', 'Distance', 'Reps', 'RPE', 'Failure', 'Notes']]
-    ex_history = ex_history.replace(0.0, np.nan)
-    ex_history.dropna(how = 'all', axis = 1, inplace = True)
-    ex_history['Date'] = ex_history['Date'].dt.date
-    st.dataframe(ex_history.style.format(precision=1))
-    
-st.markdown('---')
-
 # --- Display Summary Metrics ---
 
 agg_funcs = {'Set': lambda x: len(x), 'Reps': np.sum, 'RPE': np.mean}
@@ -270,6 +239,34 @@ with st.expander('Check workout log'):
     
 with st.expander('Check last workout'):
     st.dataframe(last_wo)
+    
+# --- Exercise History ---
+
+t1, t2 = st.tabs(["📈 Chart", "🗃 Data"])
+
+with t1:
+    # log_agg = pd.concat([ex_log, wo_tbl])
+    log_agg = ex_log.groupby(['Date', 'Exercise Name', 'Type'], as_index = False)['Reps'].sum()
+    log_agg = log_agg.merge(corr_df, on = 'Type', how = 'left')
+    log_agg['Reps'] = log_agg['Reps'] / log_agg['corr']
+
+    #fig, ax = plt.subplots()
+    #g = sns.lineplot(x = 'Date', y = 'Reps', data = log_agg, hue = 'Exercise Name', ax = ax, marker = 'o')
+    #g.legend(loc='upper left', framealpha=0.5)
+    #st.pyplot(fig)
+
+    test = log_agg.loc[log_agg['Exercise Name'] == ex].copy()
+    test['Date'] = test['Date'].dt.date.astype(str)
+    st.bar_chart(test[['Date', 'Reps']].set_index('Date'))
+    
+with t2:
+    ex_history = ex_log.loc[ex_log['Exercise Name'] == ex, ['Date', 'Set', 'Weight', 'Distance', 'Reps', 'RPE', 'Failure', 'Notes']]
+    ex_history = ex_history.replace(0.0, np.nan)
+    ex_history.dropna(how = 'all', axis = 1, inplace = True)
+    ex_history['Date'] = ex_history['Date'].dt.date
+    st.dataframe(ex_history.style.format(precision=1))
+    
+st.markdown('---')
       
 # --- Timer ---
     
