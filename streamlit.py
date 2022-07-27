@@ -55,7 +55,7 @@ def get_end_time():
 
 @st.cache(allow_output_mutation = True)
 def get_bodyweight():
-    return []
+    return float()
 
 corr_df = pd.DataFrame([['Concentric', 1],  ['Eccentric', 3], ['Isometric', 2]], 
                           columns = ['Type', 'corr'])
@@ -97,7 +97,7 @@ with c1:
     wo_date = st.date_input('Workout Date', value = date.today())
 with c2:
     bw = st.number_input('Bodyweight', step = 1.0)
-    bodyweight[0] = bw
+    bodyweight = bw
     
 st.metric('Bodyweight', bodyweight[0])
         
@@ -256,7 +256,7 @@ clear_wo = st.button('Clear Workout')
 if clear_wo:
     mutable.clear()
     end_time[0] = None
-    bodyweight[0] = None
+    bodyweight = float()
     st.experimental_rerun()
 
 st.markdown('---')
