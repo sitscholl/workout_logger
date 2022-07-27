@@ -55,7 +55,7 @@ def get_end_time():
 
 @st.cache(allow_output_mutation = True)
 def get_bodyweight():
-    return float()
+    return [None]
 
 corr_df = pd.DataFrame([['Concentric', 1],  ['Eccentric', 3], ['Isometric', 2]], 
                           columns = ['Type', 'corr'])
@@ -97,11 +97,11 @@ with c1:
     wo_date = st.date_input('Workout Date', value = date.today())
 with c2:
     bw = st.number_input('Bodyweight', step = 1.0, value = np.nan)
-    st.write(bw)
+
     if bw == bw:
-        bodyweight = bw
+        bodyweight[0] = bw
     
-st.metric('Bodyweight', bodyweight)
+st.metric('Bodyweight', bodyweight[0])
         
 last_wo_date = ex_log.loc[(ex_log['Date'].dt.date != wo_date) & (ex_log['Category'] == 'Strength'), 'Date'].max()
 last_wo = ex_log.loc[ex_log['Date'] == last_wo_date, wo_tbl_cols]
@@ -246,7 +246,7 @@ if end_wo:
     
     push_notion(token = token, log_id = log_id, wo_id = workouts_id, 
                 data = data_push, wo_date = wo_date, wo_notes = workout_notes,
-                wo_rating = workout_rating, bodyweight = bw)
+                wo_rating = workout_rating, bodyweight = bodyweight[0])
     mutable.clear()
     st.balloons() 
     
@@ -258,7 +258,7 @@ clear_wo = st.button('Clear Workout')
 if clear_wo:
     mutable.clear()
     end_time[0] = None
-    bodyweight = float()
+    bodyweight[0] = None
     st.experimental_rerun()
 
 st.markdown('---')
