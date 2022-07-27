@@ -99,7 +99,7 @@ with c2:
     bw = st.number_input('Bodyweight', step = 1.0)
     bodyweight = bw
     
-st.metric('Bodyweight', bodyweight[0])
+st.metric('Bodyweight', bodyweight)
         
 last_wo_date = ex_log.loc[(ex_log['Date'].dt.date != wo_date) & (ex_log['Category'] == 'Strength'), 'Date'].max()
 last_wo = ex_log.loc[ex_log['Date'] == last_wo_date, wo_tbl_cols]
