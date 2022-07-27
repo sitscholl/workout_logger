@@ -54,8 +54,8 @@ def get_end_time():
     return [None]
 
 @st.cache(allow_output_mutation = True)
-def get_bodyweight(x = np.nan):
-    return [x]
+def get_bodyweight():
+    return []
 
 corr_df = pd.DataFrame([['Concentric', 1],  ['Eccentric', 3], ['Isometric', 2]], 
                           columns = ['Type', 'corr'])
@@ -96,8 +96,10 @@ c1, c2, c3 = st.columns([1, 1, 3])
 with c1:
     wo_date = st.date_input('Workout Date', value = date.today())
 with c2:
-    bw_default = bodyweight[0] if bodyweight[0] == bodyweight[0] else np.nan
-    bw = st.number_input('Bodyweight', value = bw_default, step = 1.0, on_change = get_bodyweight, kwargs = dict(x = bw))
+    bw = st.number_input('Bodyweight', step = 1.0)
+    bodyweight[0] = bw
+    
+st.metric('Bodyweight', bodyweight[0])
         
 last_wo_date = ex_log.loc[(ex_log['Date'].dt.date != wo_date) & (ex_log['Category'] == 'Strength'), 'Date'].max()
 last_wo = ex_log.loc[ex_log['Date'] == last_wo_date, wo_tbl_cols]
@@ -230,7 +232,7 @@ st.markdown('---')
 
 c1, c2 = st.columns(2)
 workout_notes = c1.text_input('Workout Notes:') 
-workout_rating = c2.slider('Workout Rating', min_value = 0, max_value = 10, step = 1)
+workout_rating = c2.number_input('Workout Rating', value = np.nan, min_value = 0.0, max_value = 10.0, step = 1.0)
 
 # --- Push Data to Notion ---
 
@@ -254,6 +256,7 @@ clear_wo = st.button('Clear Workout')
 if clear_wo:
     mutable.clear()
     end_time[0] = None
+    bodyweight[0] = None
     st.experimental_rerun()
 
 st.markdown('---')
