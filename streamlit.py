@@ -106,7 +106,7 @@ st.dataframe(last_wo)
 # --- Data Input Form ---  
 
 norder = np.sum([len(i) for i in mutable.values()])+1
-ex_default = last_wo.loc[last_wo['Order'].astype(int) == norder, 'Exercise Name']
+ex_default = last_wo.loc[last_wo['Order'].astype(int) == norder, 'Exercise Name'].tolist()[0]
 ex_options = active_exercises + accessory_exercises + [i for i in ex_database['Name'].unique() if i not in active_exercises]
 ex = st.selectbox('Exercise', 
                   options = ex_options,
