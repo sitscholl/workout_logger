@@ -100,6 +100,8 @@ with c2:
       
 last_wo_date = ex_log.loc[(ex_log['Date'].dt.date != wo_date) & (ex_log['Category'] == 'Strength'), 'Date'].max()
 last_wo = ex_log.loc[ex_log['Date'] == last_wo_date, wo_tbl_cols]
+
+st.dataframe(last_wo)
             
 # --- Data Input Form ---    
 ex = st.selectbox('Exercise', options = active_exercises + accessory_exercises + [i for i in ex_database['Name'].unique() if i not in active_exercises])
@@ -209,7 +211,7 @@ workout_rating = c2.number_input('Workout Rating', value = np.nan, min_value = 0
 
 end_wo = st.button('Finish Workout')
 if end_wo:
-    #TODO: check if this part works correctly
+
     data_push = wo_tbl.merge(ex_database[['Name', 'page_id']].rename(columns = {'Name': 'Exercise Name'}),
                              on = 'Exercise Name', how = 'left', validate = 'many_to_one')
     
@@ -228,6 +230,7 @@ if clear_wo:
     mutable.clear()
     end_time[0] = None
     bodyweight[0] = None
+    
     st.experimental_rerun()
 
 st.markdown('---')
@@ -235,38 +238,38 @@ st.markdown('---')
 # --- Detailed Tables ---
 
 with st.expander('Check workout log'):
-    st.dataframe(wo_tbl)
+    st.dataframe(wo_tbl.style.format(precision=1))
     
 with st.expander('Check last workout'):
-    st.dataframe(last_wo)
+    st.dataframe(last_wo.style.format(precision=1))
     
 # --- Exercise History ---
 
-t1, t2 = st.tabs(["📈 Chart", "🗃 Data"])
+#t1, t2 = st.tabs(["📈 Chart", "🗃 Data"])
 
-with t1:
+#with t1:
     # log_agg = pd.concat([ex_log, wo_tbl])
-    log_agg = ex_log.groupby(['Date', 'Exercise Name', 'Type'], as_index = False)['Reps'].sum()
-    log_agg = log_agg.merge(corr_df, on = 'Type', how = 'left')
-    log_agg['Reps'] = log_agg['Reps'] / log_agg['corr']
+#    log_agg = ex_log.groupby(['Date', 'Exercise Name', 'Type'], as_index = False)['Reps'].sum()
+#    log_agg = log_agg.merge(corr_df, on = 'Type', how = 'left')
+#    log_agg['Reps'] = log_agg['Reps'] / log_agg['corr']
 
     #fig, ax = plt.subplots()
     #g = sns.lineplot(x = 'Date', y = 'Reps', data = log_agg, hue = 'Exercise Name', ax = ax, marker = 'o')
     #g.legend(loc='upper left', framealpha=0.5)
     #st.pyplot(fig)
 
-    test = log_agg.loc[log_agg['Exercise Name'] == ex].copy()
-    test['Date'] = test['Date'].dt.date.astype(str)
-    st.bar_chart(test[['Date', 'Reps']].set_index('Date'))
+#    test = log_agg.loc[log_agg['Exercise Name'] == ex].copy()
+#    test['Date'] = test['Date'].dt.date.astype(str)
+#    st.bar_chart(test[['Date', 'Reps']].set_index('Date'))
     
-with t2:
-    ex_history = ex_log.loc[ex_log['Exercise Name'] == ex, ['Date', 'Set', 'Weight', 'Distance', 'Reps', 'RPE', 'Failure', 'Notes']]
-    ex_history = ex_history.replace(0.0, np.nan)
-    ex_history.dropna(how = 'all', axis = 1, inplace = True)
-    ex_history['Date'] = ex_history['Date'].dt.date
-    st.dataframe(ex_history.style.format(precision=1))
+#with t2:
+#    ex_history = ex_log.loc[ex_log['Exercise Name'] == ex, ['Date', 'Set', 'Weight', 'Distance', 'Reps', 'RPE', 'Failure', 'Notes']]
+#    ex_history = ex_history.replace(0.0, np.nan)
+#    ex_history.dropna(how = 'all', axis = 1, inplace = True)
+#    ex_history['Date'] = ex_history['Date'].dt.date
+#    st.dataframe(ex_history.style.format(precision=1))
     
-st.markdown('---')
+#st.markdown('---')
       
 # --- Timer ---
     
