@@ -174,7 +174,7 @@ compare = last_wo_agg.join(wo_agg, lsuffix = '_last')
 cols = st.columns(len(compare)+1)
 cols[0].metric('Bodyweight', bodyweight[0])
 
-for nam, col in zip(compare.index[1:], cols):
+for nam, col in zip(compare.index, cols[1:]):
     with col:
         val = compare.loc[nam, 'Reps']
         delta = compare.loc[nam, 'Reps'] - compare.loc[nam, 'Reps_last']
