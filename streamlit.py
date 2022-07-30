@@ -104,6 +104,7 @@ last_wo = ex_log.loc[ex_log['Date'] == last_wo_date, wo_tbl_cols]
 # --- Data Input Form ---  
 
 norder = np.sum([len(i) for i in mutable.values()])+1
+st.dataframe(last_wo)
 ex_default = last_wo.loc[last_wo['Order'].astype(int) == norder, 'Exercise Name'].tolist()[0]
 ex_options = active_exercises + accessory_exercises + [i for i in ex_database['Name'].unique() if i not in active_exercises]
 ex = st.selectbox('Exercise', 
