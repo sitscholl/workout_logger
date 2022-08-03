@@ -38,14 +38,14 @@ def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodywe
     else:
         wo_page_id = wo_row['results'][0]['id']
     
-    data_fill = data.copy()
-    for c in data.select_dtypes('number'):
-        data_fill[c] = data_fill[c].fillna(0).astype(float)
+    #data_fill = data.copy()
+    #for c in data.select_dtypes('number'):
+    #    data_fill[c] = data_fill[c].fillna(0).astype(float)
           
     #push exercises to exercise_log
-    for i in data_fill.index:
+    for i in data.index:
         
-        row = data_fill.loc[i]
+        row = data.loc[i]
         # Create a new page in notion
         properties = {
             "Name": {"title": [{"text": {"content": row['Exercise Name']}}]},
@@ -66,7 +66,7 @@ def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodywe
                 }
         }
         
-        for i in ['Weight', 'Distance', 'RPE', 'Reps']:
+        for i in ['Weight', 'Distance', 'RPE', 'Reps', 'Set', 'Order', 'Rest']:
             if (row[i] != row[i]) or (row[i] is None):
                 del properties[i]
                 
