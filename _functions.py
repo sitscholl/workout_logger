@@ -5,6 +5,7 @@ import pandas as pd
 from notion_client import Client
 #import gspread
 import datetime
+import streamlit as st
 
 def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodyweight):
     
@@ -16,7 +17,7 @@ def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodywe
     #Check if workout entry exists
     wo_row = call_notion(token, wo_id, query_filter = {'property': 'Date', 'date': {'equals': wo_date}})
     
-    print('Workout pulled')
+    st.write('Workout pulled')
     
     if len(wo_row['results']) == 0:
         #Create workout entry
@@ -31,7 +32,7 @@ def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodywe
         workout_push = notion.pages.create(parent={"database_id": wo_id}, properties=properties)
         wo_page_id = workout_push['id']
         
-        print('Workout pushed')
+        st.write('Workout pushed')
         
     else:
         wo_page_id = wo_row['results'][0]['id']
