@@ -17,11 +17,7 @@ def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodywe
     #Check if workout entry exists
     wo_row = call_notion(token, wo_id, query_filter = {'property': 'Date', 'date': {'equals': wo_date}})
     
-    st.write('Workout pulled')
-    
     if len(wo_row['results']) == 0:
-        st.write('Pushing workout')
-        st.write(bodyweight)
         #Create workout entry
         properties = {
             "Name": {"title": [{"text": {"content": 'Strength'}}]},
@@ -31,10 +27,13 @@ def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodywe
             "Bodyweight": {"type": "number", "number": bodyweight}
             }
         
+        if bodyweight != bodyweight:
+            del properties['Bodyweight']
+        if wo_rating != wo_rating:
+            del properties['Rating num']
+        
         workout_push = notion.pages.create(parent={"database_id": wo_id}, properties=properties)
         wo_page_id = workout_push['id']
-        
-        st.write('Workout pushed')
         
     else:
         wo_page_id = wo_row['results'][0]['id']
