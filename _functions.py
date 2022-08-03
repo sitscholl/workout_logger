@@ -65,6 +65,10 @@ def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodywe
                 "relation": [{'id': wo_page_id}]
                 }
         }
+        
+        for i in ['Weight', 'Distance', 'RPE', 'Reps]:
+            if (row[i] != row[i]) or (row[i] is None):
+                del properties[i]
     
         log_push = notion.pages.create(parent={"database_id": log_id}, properties=properties)
         
