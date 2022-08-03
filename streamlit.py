@@ -218,11 +218,15 @@ if end_wo:
     data_push = wo_tbl.merge(ex_database[['Name', 'page_id']].rename(columns = {'Name': 'Exercise Name'}),
                              on = 'Exercise Name', how = 'left', validate = 'many_to_one')
     
-    push_notion(token = token, log_id = log_id, wo_id = workouts_id, 
-                data = data_push, wo_date = wo_date, wo_notes = workout_notes,
-                wo_rating = workout_rating, bodyweight = bodyweight[0])
+    try:
+        push_notion(token = token, log_id = log_id, wo_id = workouts_id, 
+                    data = data_push, wo_date = wo_date, wo_notes = workout_notes,
+                    wo_rating = workout_rating, bodyweight = bodyweight[0])
+    except:
+        st.error('Error during push_notion function. Please make sure all input variables are valid!')
     mutable.clear()
     st.balloons() 
+    bodyweight[0] = None
     
     st.experimental_rerun()
     
