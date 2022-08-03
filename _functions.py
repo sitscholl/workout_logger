@@ -21,7 +21,7 @@ def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodywe
     
     if len(wo_row['results']) == 0:
         st.write('Pushing workout')
-        st.write('bodyweight')
+        st.write(bodyweight)
         #Create workout entry
         properties = {
             "Name": {"title": [{"text": {"content": 'Strength'}}]},
