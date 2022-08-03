@@ -227,7 +227,7 @@ if end_wo:
         st.balloons() 
         bodyweight[0] = None
 
-        st.experimental_rerun()
+        #st.experimental_rerun()
     except:
         st.error('Error during push_notion function. Please make sure all input variables are valid!')
     
