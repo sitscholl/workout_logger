@@ -27,9 +27,9 @@ def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodywe
             "Bodyweight": {"type": "number", "number": bodyweight}
             }
         
-        if bodyweight != bodyweight:
+        if (bodyweight != bodyweight) or (bodyweight is None):
             del properties['Bodyweight']
-        if wo_rating != wo_rating:
+        if (wo_rating != wo_rating) or (wo_rating is None):
             del properties['Rating num']
         
         workout_push = notion.pages.create(parent={"database_id": wo_id}, properties=properties)
