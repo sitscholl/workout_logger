@@ -5,7 +5,6 @@ import pandas as pd
 from notion_client import Client
 #import gspread
 import datetime
-import streamlit as st
 
 def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodyweight):
     
@@ -69,8 +68,6 @@ def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodywe
         for i in ['Weight', 'Distance', 'RPE', 'Reps']:
             if (row[i] == 0) or (row[i] != row[i]) or (row[i] is None):
                 del properties[i]
-                
-        st.write(properties)
     
         log_push = notion.pages.create(parent={"database_id": log_id}, properties=properties)
         
