@@ -224,12 +224,12 @@ if end_wo:
                     wo_rating = workout_rating, bodyweight = bodyweight[0])
         
         mutable.clear()
-        st.balloons() 
         bodyweight[0] = None
-
+        st.success('🟢 Data succesfully send to notion!') 
+        
         #st.experimental_rerun()
     except:
-        st.error('Error during push_notion function. Please make sure all input variables are valid!')
+        st.error('⛔ Error during push_notion function. Please make sure all input variables are valid!')
     
 # --- Reset Workout ---
 
