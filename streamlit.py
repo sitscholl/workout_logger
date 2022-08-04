@@ -219,7 +219,7 @@ if end_wo:
                              on = 'Exercise Name', how = 'left', validate = 'many_to_one')
     
     try:
-        push_notion(token = token, log_id = log_id, wo_id = workouts_id, 
+        r = push_notion(token = token, log_id = log_id, wo_id = workouts_id, 
                     data = data_push, wo_date = wo_date, wo_notes = workout_notes,
                     wo_rating = workout_rating, bodyweight = bodyweight[0])
         
