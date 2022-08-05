@@ -88,15 +88,19 @@ bodyweight = get_bodyweight()
     
 # --- App Layout ---
 st.title('Workout Logger')
-       
-c1, c2, c3 = st.columns([1, 1, 3])
-with c1:
-    wo_date = st.date_input('Workout Date', value = date.today())
-with c2:
-    bw = st.number_input('Bodyweight', step = 1.0, value = np.nan)
 
-    if bw == bw:
-        bodyweight[0] = bw
+# --- Workout Level Input ---
+
+with st.expander('Workout Input:'):
+    c1, c2, c3, c4, c5 = st.columns(5)
+    wo_name = c1.text_input('Workout Title', value = 'Strength')
+    wo_date = c2.date_input('Workout Date', value = date.today())
+    bw = c3.number_input('Bodyweight', step = 1.0, value = np.nan)       
+    workout_notes = c4.text_input('Workout Notes:') 
+    workout_rating = c5.number_input('Workout Rating', value = np.nan, min_value = 0.0, max_value = 10.0, step = 1.0)
+
+if bw == bw:
+    bodyweight[0] = bw
       
 last_wo_date = ex_log.loc[(ex_log['Date'].dt.date != wo_date) & (ex_log['Category'] == 'Strength'), 'Date'].max()
 last_wo = ex_log.loc[ex_log['Date'] == last_wo_date, wo_tbl_cols]
@@ -203,12 +207,6 @@ with col2:
     st.table(last_wo_agg.style.format(precision=1))
     
 st.markdown('---')
-
-# --- Workout Level Input ---
-
-c1, c2 = st.columns(2)
-workout_notes = c1.text_input('Workout Notes:') 
-workout_rating = c2.number_input('Workout Rating', value = np.nan, min_value = 0.0, max_value = 10.0, step = 1.0)
 
 # --- Push Data to Notion ---
 
