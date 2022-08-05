@@ -6,7 +6,7 @@ from notion_client import Client
 #import gspread
 import datetime
 
-def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodyweight):
+def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodyweight, wo_name):
     
     notion = Client(auth=token)
     
@@ -19,7 +19,7 @@ def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodywe
     if len(wo_row['results']) == 0:
         #Create workout entry
         properties = {
-            "Name": {"title": [{"text": {"content": 'Strength'}}]},
+            "Name": {"title": [{"text": {"content": wo_name}}]},
             "Date": {"date": {"start": wo_date}},
             "Notes": {'rich_text':[{'type': 'text', 'text': {'content': wo_notes}}]},
             "Rating num": {"type": "number", "number": wo_rating},
