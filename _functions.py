@@ -182,7 +182,11 @@ def to_df(results):
                         val = props[col][ctype][ctype2]['start']
                     else:
                         val = None
+                elif ctype2 == 'number':
+                    val = props[col][ctype][ctype2]
                 else:
+                    print(col)
+                    print(ctype2)
                     warnings.warn('Undefined ctype in formula! Modify function to_df().')
             
             if ctype == 'rich_text':
