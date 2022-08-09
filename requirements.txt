@@ -5,3 +5,4 @@ gspread==5.4.0
 altair==4.2.0
 matplotlib==3.5.2
 seaborn==0.11.2
+streamlit-aggrid==0.3.2
