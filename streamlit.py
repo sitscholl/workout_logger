@@ -8,6 +8,7 @@ import datetime
 from datetime import date
 from datetime import time
 import asyncio
+from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 #import matplotlib.pyplot as plt
 #import seaborn as sns
 # import gspread
@@ -30,6 +31,17 @@ async def start_timer(ph, s):
         
         if stop:
             break
+            
+def display_aggrid(df: pd.DataFrame) -> AgGrid:
+    # Configure AgGrid options
+    gb = GridOptionsBuilder.from_dataframe(df)
+    gb.configure_selection('multiple', use_checkbox=True) 
+    return AgGrid(
+        df,
+        gridOptions=gb.build(),
+        # this override the default VALUE_CHANGED
+        update_mode=GridUpdateMode.MODEL_CHANGED
+    )
 
 token = st.secrets['token']
 log_id = st.secrets['log_id']
@@ -217,6 +229,11 @@ with st.expander('Check last workout'):
     st.dataframe(last_wo.sort_values(['Exercise Name', 'Set']).style.format(precision=1))
     
 st.markdown('---')
+
+ag_response = display_aggrid(wo_tbl)
+rows_to_delete = pd.DataFrame(response['selected_rows'])
+st.write('Selected rows:')
+st.write(rows_to_delete)
 
 # --- Push Data to Notion ---
 
