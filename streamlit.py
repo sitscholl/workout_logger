@@ -229,6 +229,12 @@ rows_to_delete = pd.DataFrame(ag_response['selected_rows'])
 st.write('Selected rows:')
 st.write(rows_to_delete)
 
+if st.button("Delete rows") and not rows_to_delete.empty:
+    # Lookup table is needed because AgGrid does not return rows indices
+    idx_drop = rows_to_delete['Order'].tolist()
+    mutable = [i for i in mutable if i['Order'] not in idx_drop)
+    st.success('Rows deleted')
+
 # --- Push Data to Notion ---
 
 end_wo = st.button('Finish Workout')
