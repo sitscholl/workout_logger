@@ -237,8 +237,7 @@ if st.button("Delete rows") and not rows_to_delete.empty:
     _set = defaultdict(lambda x: 0)
     
     for i, j in enumerate(mutable_new):
-        ex_nam = j['Exercise Name']
-        st.write(ex_nam)
+        ex_nam = j['Exercise Name'][0]
         _set[ex_nam] += 1
         mutable_new[i]['Order'] = [i]
         mutable_new[i]['Set'] = [_set[ex_nam]]
