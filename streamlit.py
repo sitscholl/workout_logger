@@ -224,29 +224,28 @@ with st.expander('Check last workout'):
     
 st.markdown('---')
 
-ag_response = display_aggrid(wo_tbl)
-rows_to_delete = pd.DataFrame(ag_response['selected_rows'])
-st.write('Selected rows:')
-st.write(rows_to_delete)
+with st.expander('Delete rows'):
+    ag_response = display_aggrid(wo_tbl)
+    rows_to_delete = pd.DataFrame(ag_response['selected_rows'])
 
-if st.button("Delete rows") and not rows_to_delete.empty:
-    # Lookup table is needed because AgGrid does not return rows indices
-    idx_drop = rows_to_delete['Order'].tolist()
-    mutable_new = [i for i in mutable if not i['Order'][0] in idx_drop]
-    
-    _set = defaultdict(lambda: 0)
-    
-    for i, j in enumerate(mutable_new):
-        ex_nam = j['Exercise Name'][0]
-        _set[ex_nam] += 1
-        mutable_new[i]['Order'] = [i+1]
-        mutable_new[i]['Set'] = [_set[ex_nam]]
-    
-    mutable.clear()
-    for i in mutable_new:
-        mutable.append(i)
+    if st.button("Delete rows") and not rows_to_delete.empty:
 
-    st.success('Rows deleted')
+        idx_drop = rows_to_delete['Order'].tolist()
+        mutable_new = [i for i in mutable if not i['Order'][0] in idx_drop]
+
+        _set = defaultdict(lambda: 0)
+        #reset set and order after removing rows
+        for i, j in enumerate(mutable_new):
+            ex_nam = j['Exercise Name'][0]
+            _set[ex_nam] += 1
+            mutable_new[i]['Order'] = [i+1]
+            mutable_new[i]['Set'] = [_set[ex_nam]]
+
+        mutable.clear()
+        for i in mutable_new:
+            mutable.append(i)
+
+        st.success('Rows deleted')
 
 # --- Push Data to Notion ---
 
