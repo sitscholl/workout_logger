@@ -119,7 +119,7 @@ last_wo = ex_log.loc[ex_log['Date'] == last_wo_date, wo_tbl_cols]
             
 # --- Data Input Form ---  
 
-norder = np.sum([len(i) for i in mutable.values()])+1
+norder = len(mutable)+1
 #ex_default = last_wo.loc[last_wo['Order'].fillna(999).astype(int) == norder, 'Exercise Name'].tolist()[0] #If exercise not found, this raises an Index Error
 ex_options = active_exercises + accessory_exercises + [i for i in ex_database['Name'].unique() if i not in active_exercises]
 ex = st.selectbox('Exercise', 
@@ -127,7 +127,7 @@ ex = st.selectbox('Exercise',
                   #index = ex_options.index(ex_default))
 with st.form(ex):
         
-    nset = len(mutable[ex])+1
+    nset = len([i for i in mutable if i['Exercise Name'] == ex) + 1
 
     st.markdown(f'**{ex}** (*Set {nset}*) (*Exercise Nr. {norder}*)')
     
