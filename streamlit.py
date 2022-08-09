@@ -231,7 +231,7 @@ with st.expander('Check last workout'):
 st.markdown('---')
 
 ag_response = display_aggrid(wo_tbl)
-rows_to_delete = pd.DataFrame(response['selected_rows'])
+rows_to_delete = pd.DataFrame(ag_response['selected_rows'])
 st.write('Selected rows:')
 st.write(rows_to_delete)
 
