@@ -234,6 +234,13 @@ if st.button("Delete rows") and not rows_to_delete.empty:
     idx_drop = rows_to_delete['Order'].tolist()
     mutable_new = [i for i in mutable if not i['Order'][0] in idx_drop]
     
+    _set = defaultdict(0)
+    
+    for i, j in enumerate(mutable_new):
+        _set[j['Exercise Name']] += 1
+        mutable_new[i]['Order'] = [i]
+        mutable_new[i]['Set'] = [_set[j['Exercise Name']]]
+    
     mutable.clear()
     for i in mutable_new:
         mutable.append(i)
