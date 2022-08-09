@@ -127,7 +127,7 @@ ex = st.selectbox('Exercise',
                   #index = ex_options.index(ex_default))
 with st.form(ex):
         
-    nset = len([i for i in mutable if i['Exercise Name'] == [ex]) + 1
+    nset = len([i for i in mutable if i['Exercise Name'] == [ex]]) + 1
 
     st.markdown(f'**{ex}** (*Set {nset}*) (*Exercise Nr. {norder}*)')
     
