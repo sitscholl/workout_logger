@@ -208,6 +208,16 @@ with col2:
     
 st.markdown('---')
 
+# --- Detailed Tables ---
+
+with st.expander('Check workout log'):
+    st.dataframe(wo_tbl.sort_values(['Exercise Name', 'Set']).style.format(precision=1))
+    
+with st.expander('Check last workout'):
+    st.dataframe(last_wo.sort_values(['Exercise Name', 'Set']).style.format(precision=1))
+    
+st.markdown('---')
+
 # --- Push Data to Notion ---
 
 end_wo = st.button('Finish Workout')
@@ -240,14 +250,6 @@ if clear_wo:
     st.experimental_rerun()
 
 st.markdown('---')
-
-# --- Detailed Tables ---
-
-with st.expander('Check workout log'):
-    st.dataframe(wo_tbl.sort_values('Order').style.format(precision=1))
-    
-with st.expander('Check last workout'):
-    st.dataframe(last_wo.sort_values('Order').style.format(precision=1))
     
 # --- Exercise History ---
 
