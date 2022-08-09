@@ -59,7 +59,7 @@ def get_notion(token, db_id, query_filter = None):
 
 @st.cache(allow_output_mutation = True)
 def get_mutable():
-    return defaultdict(list)
+    return []
 
 @st.cache(allow_output_mutation = True)
 def get_end_time():
@@ -154,7 +154,7 @@ with st.form(ex):
     submitted = st.form_submit_button(f'Submit {ex}')
     
     if submitted:                
-        mutable[ex].append({'Exercise Name': [ex], 'Set': [nset], 'Weight': [weight],
+        mutable.append({'Exercise Name': [ex], 'Set': [nset], 'Weight': [weight],
                             'Distance': [distance], 'Reps': [reps], 'RPE': [RPE],
                             'Failure': [failure], 'Notes': [notes], 
                             'Order': [norder], 'Rest': [to_s(timer)]})
@@ -170,14 +170,8 @@ if stop:
     
 # --- Generate table for current workout ---
 
-wo_tbl = []
-
-for ex, data in mutable.items():
-    if len(data) > 0:
-        wo_tbl.append(pd.concat([pd.DataFrame(i) for i in data]))
-    
-if len(wo_tbl) > 0:
-    wo_tbl = pd.concat(wo_tbl)
+if len(mutable) > 0:
+     wo_tbl = pd.concat([pd.DataFrame(i) for i in mutable])
 else:
     wo_tbl = pd.DataFrame(columns = wo_tbl_cols)
     
