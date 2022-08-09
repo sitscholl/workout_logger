@@ -232,10 +232,12 @@ st.write(rows_to_delete)
 if st.button("Delete rows") and not rows_to_delete.empty:
     # Lookup table is needed because AgGrid does not return rows indices
     idx_drop = rows_to_delete['Order'].tolist()
+    mutable_new = [i for i in mutable if not i['Order'][0] in idx_drop]
     
-    for i, j in enumerate(mutable):
-        if j['Order'] in idx_drop:
-            del mutable[i]
+    mutable.clear()
+    for i in mutable_new:
+        mutable.append(i)
+
     st.success('Rows deleted')
 
 # --- Push Data to Notion ---
