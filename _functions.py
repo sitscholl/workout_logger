@@ -14,28 +14,28 @@ def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodywe
         wo_date = wo_date.strftime('%Y-%m-%d')
     
     #Check if workout entry exists
-    wo_row = call_notion(token, wo_id, query_filter = {'property': 'Date', 'date': {'equals': wo_date}})
+    #wo_row = call_notion(token, wo_id, query_filter = {'property': 'Date', 'date': {'equals': wo_date}})
     
-    if len(wo_row['results']) == 0:
-        #Create workout entry
-        properties = {
-            "Name": {"title": [{"text": {"content": wo_name}}]},
-            "Date": {"date": {"start": wo_date}},
-            "Notes": {'rich_text':[{'type': 'text', 'text': {'content': wo_notes}}]},
-            "Rating num": {"type": "number", "number": wo_rating},
-            "Bodyweight": {"type": "number", "number": bodyweight}
-            }
+    #if len(wo_row['results']) == 0:
+    #Create workout entry
+    properties = {
+        "Name": {"title": [{"text": {"content": wo_name}}]},
+        "Date": {"date": {"start": wo_date}},
+        "Notes": {'rich_text':[{'type': 'text', 'text': {'content': wo_notes}}]},
+        "Rating num": {"type": "number", "number": wo_rating},
+        "Bodyweight": {"type": "number", "number": bodyweight}
+        }
+
+    if (bodyweight != bodyweight) or (bodyweight is None):
+        del properties['Bodyweight']
+    if (wo_rating != wo_rating) or (wo_rating is None):
+        del properties['Rating num']
+
+    workout_push = notion.pages.create(parent={"database_id": wo_id}, properties=properties)
+    wo_page_id = workout_push['id']
         
-        if (bodyweight != bodyweight) or (bodyweight is None):
-            del properties['Bodyweight']
-        if (wo_rating != wo_rating) or (wo_rating is None):
-            del properties['Rating num']
-        
-        workout_push = notion.pages.create(parent={"database_id": wo_id}, properties=properties)
-        wo_page_id = workout_push['id']
-        
-    else:
-        wo_page_id = wo_row['results'][0]['id']
+    #else:
+    #    wo_page_id = wo_row['results'][0]['id']
     
     data_fill = data.copy()
     for c in data.select_dtypes('number'):
