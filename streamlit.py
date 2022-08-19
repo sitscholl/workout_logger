@@ -266,6 +266,7 @@ if end_wo:
         
         #st.experimental_rerun()
     except:
+        st.dataframe(data_push)
         st.error('⛔ Error during push_notion function. Please make sure all input variables are valid!')
     
 # --- Reset Workout ---
