@@ -33,8 +33,6 @@ def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodywe
 
     workout_push = notion.pages.create(parent={"database_id": wo_id}, properties=properties)
     wo_page_id = workout_push['id']
-    
-    st.write('Workout pushed')
         
     #else:
     #    wo_page_id = wo_row['results'][0]['id']
