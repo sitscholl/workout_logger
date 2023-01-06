@@ -8,7 +8,8 @@ import datetime
 from datetime import date
 from datetime import time
 import asyncio
-# import gspread
+import gspread
+from gspread_dataframe import set_with_dataframe
 
 def to_s(t):
     
