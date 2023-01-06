@@ -17,7 +17,7 @@ creds = st.secrets["gcp_service_account"]
 client = gspread.service_account_from_dict(creds, scope)
 
 gtable = client.open("Workout Summary")
-sheet_name = "Dec2022"
+sheet_name = "Sheet2"
 sheet = gtable.worksheet(sheet_name)
 df = pd.DataFrame(sheet.get_values()[1:], columns = sheet.get_values()[0])
 
