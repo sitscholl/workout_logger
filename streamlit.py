@@ -8,9 +8,6 @@ import datetime
 from datetime import date
 from datetime import time
 import asyncio
-#from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
-#import matplotlib.pyplot as plt
-#import seaborn as sns
 # import gspread
 
 def to_s(t):
@@ -31,17 +28,6 @@ async def start_timer(ph, s):
         
         if stop:
             break
-            
-#def display_aggrid(df: pd.DataFrame) -> AgGrid:
-#    # Configure AgGrid options
-#    gb = GridOptionsBuilder.from_dataframe(df)
-#    gb.configure_selection('multiple', use_checkbox=True) 
-#    return AgGrid(
-#        df,
-#        gridOptions=gb.build(),
-#        # this override the default VALUE_CHANGED
-#        update_mode=GridUpdateMode.MODEL_CHANGED
-#    )
 
 token = st.secrets['token']
 log_id = st.secrets['log_id']
@@ -78,14 +64,6 @@ wo_tbl_cols = ['Order', 'Exercise Name', 'Set', 'Weight', 'Distance', 'Reps', 'R
 ex_database = get_notion(token, exercises_id)[['Parent', 'Name', 'Level', 'Type', 'Group', 'Group 2', 'Category', 'Muscles', 'Status', 'page_id']]
 ex_database = ex_database.sort_values(['Parent', 'Level', 'Name']).reset_index(drop = True)
 
-ex_log = get_notion(token, log_id, query_filter = {'property': 'Date', 'rollup': {'date': {'past_month': {}}}})
-ex_log = ex_log.copy()
-ex_log['Date'] = pd.to_datetime(ex_log['Date'], format = '%Y-%m-%d')
-ex_log.sort_values(['Date', 'Exercise Name'], inplace = True)
-ex_log['Set_fill'] = ex_log.groupby(['Date', 'Exercise Name'])['Set'].cumcount()+1
-ex_log['Set'] = ex_log['Set'].fillna(ex_log['Set_fill']).astype(int)
-ex_log = ex_log.sort_values(['Date', 'Exercise Name', 'Set']).reset_index(drop = True)
-
 active_exercises = ex_database.loc[ex_database['Status'].isin(['In Progress']), 'Name'].tolist()
 accessory_exercises = ex_database.loc[ex_database['Status'].isin(['Accessory']), 'Name'].tolist()
 
@@ -113,10 +91,7 @@ with st.expander('Workout Input:'):
 
 if bw == bw:
     bodyweight[0] = bw
-      
-last_wo_date = ex_log.loc[(ex_log['Date'].dt.date != wo_date) & (ex_log['Category'] == 'Strength'), 'Date'].max()
-last_wo = ex_log.loc[ex_log['Date'] == last_wo_date, wo_tbl_cols]
-            
+                
 # --- Data Input Form ---  
 
 norder = len(mutable)+1
@@ -177,75 +152,12 @@ else:
     
 st.markdown('---')
 
-# --- Display Summary Metrics ---
-
-agg_funcs = {'Set': lambda x: len(x), 'Reps': np.sum, 'RPE': np.mean}
-
-wo_agg = wo_tbl.groupby('Exercise Name')[['Set', 'Reps', 'RPE']].agg(agg_funcs)
-last_wo_agg = last_wo.groupby('Exercise Name')[['Set', 'Reps', 'RPE']].agg(agg_funcs)
-
-compare = last_wo_agg.join(wo_agg, lsuffix = '_last')
-
-cols = st.columns(len(compare)+1)
-cols[0].metric('Bodyweight', bodyweight[0])
-
-for nam, col in zip(compare.index, cols[1:]):
-    with col:
-        val = compare.loc[nam, 'Reps']
-        delta = compare.loc[nam, 'Reps'] - compare.loc[nam, 'Reps_last']
-        
-        label = ''.join([x[0:3].title() for x in nam.split(' ')])
-        val = val if val == val else 0
-        delta = delta if delta == delta else None
-        st.metric(label = label, value = val, delta = delta)
-
-# --- Display Summary Tables ---
-        
-col1, col2 = st.columns(2)
-with col1:
-    st.markdown('### This Workout')
-    st.caption(datetime.datetime.strftime(wo_date, '%Y-%m-%d'))
-    st.table(wo_agg.style.format(precision=1))
-
-with col2:
-    st.markdown('### Last Workout')
-    st.caption(datetime.datetime.strftime(last_wo_date, '%Y-%m-%d'))
-    st.table(last_wo_agg.style.format(precision=1))
-    
-st.markdown('---')
-
 # --- Detailed Tables ---
 
 with st.expander('Check workout log'):
     st.dataframe(wo_tbl.sort_values(['Exercise Name', 'Set']).style.format(precision=1))
     
-with st.expander('Check last workout'):
-    st.dataframe(last_wo.sort_values(['Exercise Name', 'Set']).style.format(precision=1))
-    
 st.markdown('---')
-
-#with st.expander('Delete rows'):
-#    ag_response = display_aggrid(wo_tbl)
-#    rows_to_delete = pd.DataFrame(ag_response['selected_rows'])
-
-#    if st.button("Delete rows") and not rows_to_delete.empty:
-
-#        idx_drop = rows_to_delete['Order'].tolist()
-#        mutable_new = [i for i in mutable if not i['Order'][0] in idx_drop]
-
-#        _set = defaultdict(lambda: 0)
-#        #reset set and order after removing rows
-#        for i, j in enumerate(mutable_new):
-#            ex_nam = j['Exercise Name'][0]
-#            _set[ex_nam] += 1
-#            mutable_new[i]['Order'] = [i+1]
-#            mutable_new[i]['Set'] = [_set[ex_nam]]
-
-#        mutable.clear()
-#        for i in mutable_new:
-#            mutable.append(i)
-
-#        st.success('Rows deleted')
 
 # --- Push Data to Notion ---
 
@@ -280,35 +192,7 @@ if clear_wo:
     st.experimental_rerun()
 
 st.markdown('---')
-    
-# --- Exercise History ---
-
-#t1, t2 = st.tabs(["📈 Chart", "🗃 Data"])
-
-#with t1:
-    # log_agg = pd.concat([ex_log, wo_tbl])
-#    log_agg = ex_log.groupby(['Date', 'Exercise Name', 'Type'], as_index = False)['Reps'].sum()
-#    log_agg = log_agg.merge(corr_df, on = 'Type', how = 'left')
-#    log_agg['Reps'] = log_agg['Reps'] / log_agg['corr']
-
-    #fig, ax = plt.subplots()
-    #g = sns.lineplot(x = 'Date', y = 'Reps', data = log_agg, hue = 'Exercise Name', ax = ax, marker = 'o')
-    #g.legend(loc='upper left', framealpha=0.5)
-    #st.pyplot(fig)
-
-#    test = log_agg.loc[log_agg['Exercise Name'] == ex].copy()
-#    test['Date'] = test['Date'].dt.date.astype(str)
-#    st.bar_chart(test[['Date', 'Reps']].set_index('Date'))
-    
-#with t2:
-#    ex_history = ex_log.loc[ex_log['Exercise Name'] == ex, ['Date', 'Set', 'Weight', 'Distance', 'Reps', 'RPE', 'Failure', 'Notes']]
-#    ex_history = ex_history.replace(0.0, np.nan)
-#    ex_history.dropna(how = 'all', axis = 1, inplace = True)
-#    ex_history['Date'] = ex_history['Date'].dt.date
-#    st.dataframe(ex_history.style.format(precision=1))
-    
-#st.markdown('---')
-      
+         
 # --- Timer ---
     
 if (end_time[0] != None) and (end_time[0] > datetime.datetime.now()):
