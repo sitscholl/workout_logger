@@ -14,8 +14,13 @@ from gspread_dataframe import set_with_dataframe
 scope = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
 
 creds = st.secrets["gcp_service_account"]
-st.write(creds)
 client = gspread.service_account_from_dict(creds, scope)
+
+gtable = client.open("Workout Summary")
+sheet_name = "Dec2022"
+sheet = gtable.worksheet(sheet_name)
+df = pd.DataFrame(sheet.get_values()[1:], columns = sheet.get_values()[0])
+st.dataframe(df)
 
 def to_s(t):
     
