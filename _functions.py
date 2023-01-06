@@ -5,6 +5,7 @@ import pandas as pd
 from notion_client import Client
 #import gspread
 import datetime
+import re
 
 def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodyweight, wo_name):
     
