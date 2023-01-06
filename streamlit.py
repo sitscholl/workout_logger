@@ -151,12 +151,16 @@ if len(mutable) > 0:
      wo_tbl = pd.concat([pd.DataFrame(i) for i in mutable])
 else:
     wo_tbl = pd.DataFrame(columns = wo_tbl_cols)
+   
+agg_funcs = {'Set': lambda x: len(x), 'Reps': np.sum, 'RPE': np.mean}
+
+wo_agg = wo_tbl.groupby('Exercise Name')[['Set', 'Reps', 'RPE']].agg(agg_funcs)
     
 st.markdown('---')
 
 # --- Detailed Tables ---
 
-with st.expander('Check workout log'):
+with st.expander('Check detailed workout log'):
     st.dataframe(wo_tbl.sort_values(['Exercise Name', 'Set']).style.format(precision=1))
     
 st.markdown('---')
