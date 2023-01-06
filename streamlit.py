@@ -10,8 +10,6 @@ from datetime import time
 import asyncio
 # import gspread
 
-st.title("can you see this?")
-
 def to_s(t):
     
     m,s,ms = str(t).split(':')
