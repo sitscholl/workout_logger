@@ -155,6 +155,10 @@ else:
 agg_funcs = {'Set': lambda x: len(x), 'Reps': np.sum, 'RPE': np.mean}
 
 wo_agg = wo_tbl.groupby('Exercise Name')[['Set', 'Reps', 'RPE']].agg(agg_funcs)
+
+st.markdown('### This Workout')
+st.caption(datetime.datetime.strftime(wo_date, '%Y-%m-%d'))
+st.table(wo_agg.style.format(precision=1))
     
 st.markdown('---')
 
