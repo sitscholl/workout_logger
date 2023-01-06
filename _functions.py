@@ -294,7 +294,7 @@ def agg_table(tbl_log):
     #tbl_log['agg_string'] = tbl_log['Name'] + ' ' + tbl_log['agg_string']
 
     #Pivot
-    df_out = log_re.pivot_table(index = ['Parent', 'Name'], columns = ['week', 'date', 'day_of_week'], 
+    df_out = tbl_log.pivot_table(index = ['Parent', 'Name'], columns = ['week', 'date', 'day_of_week'], 
                              values = 'agg_string', aggfunc = lambda x: '; '.join(x))
 
     return(df_out)
