@@ -130,7 +130,7 @@ with st.form(ex):
         
     submitted = st.form_submit_button(f'Submit {ex}')
     
-    if submitted:                
+    if submitted and not stop:                
         mutable.append({'Exercise Name': [ex], 'Set': [nset], 'Weight': [weight],
                             'Distance': [distance], 'Reps': [reps], 'RPE': [RPE],
                             'Failure': [failure], 'Notes': [notes], 
