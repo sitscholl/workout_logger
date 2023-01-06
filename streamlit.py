@@ -8,7 +8,7 @@ import datetime
 from datetime import date
 from datetime import time
 import asyncio
-from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
+#from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
 #import matplotlib.pyplot as plt
 #import seaborn as sns
 # import gspread
@@ -32,16 +32,16 @@ async def start_timer(ph, s):
         if stop:
             break
             
-def display_aggrid(df: pd.DataFrame) -> AgGrid:
-    # Configure AgGrid options
-    gb = GridOptionsBuilder.from_dataframe(df)
-    gb.configure_selection('multiple', use_checkbox=True) 
-    return AgGrid(
-        df,
-        gridOptions=gb.build(),
-        # this override the default VALUE_CHANGED
-        update_mode=GridUpdateMode.MODEL_CHANGED
-    )
+#def display_aggrid(df: pd.DataFrame) -> AgGrid:
+#    # Configure AgGrid options
+#    gb = GridOptionsBuilder.from_dataframe(df)
+#    gb.configure_selection('multiple', use_checkbox=True) 
+#    return AgGrid(
+#        df,
+#        gridOptions=gb.build(),
+#        # this override the default VALUE_CHANGED
+#        update_mode=GridUpdateMode.MODEL_CHANGED
+#    )
 
 token = st.secrets['token']
 log_id = st.secrets['log_id']
@@ -224,28 +224,28 @@ with st.expander('Check last workout'):
     
 st.markdown('---')
 
-with st.expander('Delete rows'):
-    ag_response = display_aggrid(wo_tbl)
-    rows_to_delete = pd.DataFrame(ag_response['selected_rows'])
+#with st.expander('Delete rows'):
+#    ag_response = display_aggrid(wo_tbl)
+#    rows_to_delete = pd.DataFrame(ag_response['selected_rows'])
 
-    if st.button("Delete rows") and not rows_to_delete.empty:
+#    if st.button("Delete rows") and not rows_to_delete.empty:
 
-        idx_drop = rows_to_delete['Order'].tolist()
-        mutable_new = [i for i in mutable if not i['Order'][0] in idx_drop]
+#        idx_drop = rows_to_delete['Order'].tolist()
+#        mutable_new = [i for i in mutable if not i['Order'][0] in idx_drop]
 
-        _set = defaultdict(lambda: 0)
-        #reset set and order after removing rows
-        for i, j in enumerate(mutable_new):
-            ex_nam = j['Exercise Name'][0]
-            _set[ex_nam] += 1
-            mutable_new[i]['Order'] = [i+1]
-            mutable_new[i]['Set'] = [_set[ex_nam]]
+#        _set = defaultdict(lambda: 0)
+#        #reset set and order after removing rows
+#        for i, j in enumerate(mutable_new):
+#            ex_nam = j['Exercise Name'][0]
+#            _set[ex_nam] += 1
+#            mutable_new[i]['Order'] = [i+1]
+#            mutable_new[i]['Set'] = [_set[ex_nam]]
 
-        mutable.clear()
-        for i in mutable_new:
-            mutable.append(i)
+#        mutable.clear()
+#        for i in mutable_new:
+#            mutable.append(i)
 
-        st.success('Rows deleted')
+#        st.success('Rows deleted')
 
 # --- Push Data to Notion ---
 
