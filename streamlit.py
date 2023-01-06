@@ -185,6 +185,7 @@ if end_wo:
     #Push aggregated table to google sheet
     #1 get data from notion
     month_start = f'{wo_date.year}-{wo_date.month}-01'
+    st.write(month_start)
     wo_ids = call_notion(token, workouts_id, query_filter = {'property': 'Date', 'date': {'after': month_start}})
     wo_ids = [i['id'] for i in wo_ids['results']]
 
