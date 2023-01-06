@@ -250,3 +250,50 @@ def to_df(results):
             d[col].append(val)
     df = pd.DataFrame(d)
     return(df)
+
+def create_string(weight, distance, n, reps, failure):
+    
+    failure = '*' if failure else ''
+    distance = re.sub('\.0', '', distance)
+    weight = re.sub('\.0', '', weight)
+
+    str_list = [str(i) for i in [weight, distance, n, reps] if i != '']
+    str_agg = 'x'.join(str_list)
+    return(str_agg)
+
+def agg_table(tbl_log):
+
+    #Prepare table
+    tbl_log['Date'] = pd.to_datetime(tbl_log['Date'], format = '%Y-%m-%d')
+    #tbl_log = tbl_log.loc[tbl_log['Category'] == 'Strength']
+    tbl_log = tbl_log[['Date', 'Order', 'Parent', 'Name', 'Set', 'Weight', 'Distance', 'Reps', 'Failure', 'RPE']].copy()
+    tbl_log.sort_values(['Date', 'Order', 'Name', 'Set'], inplace = True)
+
+    #Transform numbers to strings
+    for i, unit in zip(['Weight', 'Distance'], ['kg', 'cm']):
+        tbl_log[i] = tbl_log[i].fillna('').astype(str)
+        #tbl_log[i] = np.where(tbl_log[i] != '', tbl_log[i] + unit, tbl_log[i])
+    tbl_log['Reps'] = tbl_log['Reps'].astype(int)
+
+    #Calculate metrics for each workout
+    tbl_log = tbl_log.groupby(['Date', 'Parent', 'Name', 'Weight', 'Distance', 'Reps']).agg(n = ('Set', len), failure = ('Failure', lambda x: any(x == True)), order = ('Order', min)).reset_index()
+    tbl_log['n'] = tbl_log['n'].astype(int)
+
+    #Create aggregated string
+    tbl_log['agg_str'] = tbl_log.apply(lambda row: create_string(row['Weight'], row['Distance'], row['n'], row['Reps'], row['failure']), axis = 1)
+
+    tbl_log = tbl_log.sort_values(['Date', 'order']).groupby(['Date', 'Parent', 'Name'], as_index=False).agg(agg_string = ('agg_str', lambda x: ';\n'.join(x)), order = ('order', min))
+    tbl_log.sort_values(['Date', 'order'], inplace = True)
+
+    #Add timestamp columns
+    tbl_log['date'] = tbl_log['Date'].dt.date
+    tbl_log['week'] = tbl_log.Date.dt.isocalendar().week
+    tbl_log['day_of_week'] = tbl_log['Date'].dt.day_name()
+    #tbl_log['day_of_week'] = tbl_log['date'].astype(str) + '\n' + tbl_log['day_of_week']
+    #tbl_log['agg_string'] = tbl_log['Name'] + ' ' + tbl_log['agg_string']
+
+    #Pivot
+    df_out = log_re.pivot_table(index = ['Parent', 'Name'], columns = ['week', 'date', 'day_of_week'], 
+                             values = 'agg_string', aggfunc = lambda x: '; '.join(x))
+
+    return(df_out)
