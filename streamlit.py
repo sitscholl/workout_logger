@@ -11,18 +11,6 @@ import asyncio
 import gspread
 from gspread_dataframe import set_with_dataframe
 
-scope = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
-
-creds = st.secrets["gcp_service_account"]
-client = gspread.service_account_from_dict(creds, scope)
-
-gtable = client.open("Workout Summary")
-sheet_name = "Sheet2"
-sheet = gtable.worksheet(sheet_name)
-df = pd.DataFrame(sheet.get_values()[1:], columns = sheet.get_values()[0])
-
-st.dataframe(df)
-
 def to_s(t):
     
     m,s,ms = str(t).split(':')
@@ -193,6 +181,37 @@ if end_wo:
     except:
         st.dataframe(data_push)
         st.error('⛔ Error during push_notion function. Please make sure all input variables are valid!')
+        
+    #Push aggregated table to google sheet
+    #1 get data from notion
+    month_start = f'{wo_date.year}-{wo_date.month}-01'
+    wo_ids = call_notion(token, workouts_id, query_filter = {'property': 'Date', 'date': {'after': month_start}})
+    wo_ids = [i['id'] for i in wo_ids['results']]
+
+    log_call = [call_notion(token, log_id, query_filter = {'property': 'Workout', 'relation': {'contains': i}}) for i in wo_ids]
+    tbl_log = pd.concat([to_df(i['results']) for i in log_call])
+    
+    df_out = agg_table(tbl_log)
+    
+    #2 send to google sheets
+    scope = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
+
+    creds = st.secrets["gcp_service_account"]
+    client = gspread.service_account_from_dict(creds, scope)   
+    gtable = client.open("Workout Summary")
+    sheet_name = f"{calendar.month_abbr[wo_date.month]}{wo_date.year}"
+    sheets = [i.title for i in gtable.worksheets()]
+
+    if sheet_name not in sheets:
+        gtable.add_worksheet(sheet_name, rows = 100, cols = 100)
+    else:
+        gtable.worksheet(sheet_name).clear()
+
+    ws = gtable.worksheet(sheet_name)
+
+    set_with_dataframe(worksheet=ws, dataframe=df_out, include_index=True, include_column_header=True, resize=True)
+    
+    st.success('🟢 Data succesfully send to google sheet!') 
     
 # --- Reset Workout ---
 
