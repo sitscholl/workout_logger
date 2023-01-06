@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import re
 from collections import defaultdict
 from _functions import to_df, call_notion, push_notion, agg_table
 from notion_client import Client
@@ -11,6 +10,7 @@ from datetime import time
 import asyncio
 import gspread
 from gspread_dataframe import set_with_dataframe
+import calendar
 
 def to_s(t):
     
@@ -186,7 +186,7 @@ if end_wo:
     #Push aggregated table to google sheet
     #1 get data from notion
     month_start = f'{wo_date.year}-{wo_date.month:02}-01'
-    st.write(month_start)
+
     wo_ids = call_notion(token, workouts_id, query_filter = {'property': 'Date', 'date': {'after': month_start}})
     wo_ids = [i['id'] for i in wo_ids['results']]
 
