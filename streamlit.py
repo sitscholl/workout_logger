@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import re
 from collections import defaultdict
 from _functions import to_df, call_notion, push_notion, agg_table
 from notion_client import Client
