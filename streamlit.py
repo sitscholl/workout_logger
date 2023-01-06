@@ -21,6 +21,8 @@ sheet_name = "Dec2022"
 sheet = gtable.worksheet(sheet_name)
 df = pd.DataFrame(sheet.get_values()[1:], columns = sheet.get_values()[0])
 
+st.dataframe(df).style.format(precision=1))
+
 def to_s(t):
     
     m,s,ms = str(t).split(':')
