@@ -36,8 +36,6 @@ log_id = st.secrets['log_id']
 exercises_id = st.secrets['exercises_id']
 workouts_id = st.secrets['workouts_id']
 
-#google_credentials = st.secrets['g_creds']
-
 notion = Client(auth=token)
 
 @st.cache(ttl = 86400)
@@ -93,6 +91,11 @@ with st.expander('Workout Input:'):
 
 if bw == bw:
     bodyweight[0] = bw
+    
+# --- Timer ---  
+
+ph = st.empty()
+stop = st.button('Stop timer')
                 
 # --- Data Input Form ---  
 
@@ -138,9 +141,6 @@ with st.form(ex):
         
         #Save the scheduled end time when the timer is started
         end_time[0] = datetime.datetime.now() + datetime.timedelta(seconds = to_s(timer))
-
-ph = st.empty()
-stop = st.button('Stop timer')
 
 if stop:
     end_time[0] = None
