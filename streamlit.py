@@ -11,6 +11,12 @@ import asyncio
 import gspread
 from gspread_dataframe import set_with_dataframe
 
+scope = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
+
+creds = st.secrets["gcp_service_account"]
+st.write(creds)
+client = gspread.service_account_from_dict(creds, scope)
+
 def to_s(t):
     
     m,s,ms = str(t).split(':')
