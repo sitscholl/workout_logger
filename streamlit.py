@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from collections import defaultdict
-from _functions import to_df, call_notion, push_notion
+from _functions import to_df, call_notion, push_notion, agg_table
 from notion_client import Client
 import datetime
 from datetime import date
@@ -169,13 +169,13 @@ if end_wo:
                              on = 'Exercise Name', how = 'left', validate = 'many_to_one')
     
     try:
-        r = push_notion(token = token, log_id = log_id, wo_id = workouts_id, 
-                        data = data_push, wo_date = wo_date, wo_notes = workout_notes,
-                        wo_rating = workout_rating, bodyweight = bodyweight[0], wo_name = wo_name)
+        #r = push_notion(token = token, log_id = log_id, wo_id = workouts_id, 
+        #                data = data_push, wo_date = wo_date, wo_notes = workout_notes,
+        #                wo_rating = workout_rating, bodyweight = bodyweight[0], wo_name = wo_name)
         
         mutable.clear()
         bodyweight[0] = None
-        st.success('🟢 Data succesfully send to notion!') 
+        #st.success('🟢 Data succesfully send to notion!') 
         
         #st.experimental_rerun()
     except:
