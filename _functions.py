@@ -63,7 +63,8 @@ def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodywe
                 },
             "Workout": {
                 "relation": [{'id': wo_page_id}]
-                }
+                },
+            "Intensity": {"type": "select", "select": {"name": row['Intensity']}}
         }
         
         for i in ['Weight', 'Distance', 'RPE', 'Reps']:
@@ -72,25 +73,6 @@ def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodywe
     
         log_push = notion.pages.create(parent={"database_id": log_id}, properties=properties)
         
-# def push_gsheet(creds, log_id):
-    
-#     #Save backup to google sheets
-#     scope = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
-#     client = gspread.service_account_from_dict(creds, scope)
-#     sheet = client.open("Wo Backup").sheet1
-#     #gcols = sheet.row_values(1)
-    
-#     tbl_full = call_notion(token, log_id) #Download entire dataset
-
-#     for c in tbl_full.select_dtypes(np.number).columns:
-#         tbl_full[c] = tbl_full[c].fillna(0).astype(float)
-        
-#     sheet.clear()
-         
-#     tbl_full.drop('Mesocycle', axis = 1, inplace = True, errors = 'ignore') #Fix values of mesocycle
-#     sheet.append_rows([tbl_full.columns.tolist()]) #Add column titles
-#     sheet.append_rows(tbl_full.values.tolist(), value_input_option="USER_ENTERED") #Add data
-
 def call_notion(token, dbid, query_filter = None):
     
     notion = Client(auth=token)
