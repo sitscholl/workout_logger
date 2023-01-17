@@ -252,14 +252,17 @@ def to_df(results):
     df = pd.DataFrame(d)
     return(df)
 
-def create_string(weight, distance, n, reps, failure):
+def create_string(weight, distance, n, reps, failure, intensity):
     
     failure = '*' if failure else ''
     distance = re.sub('\.0', '', distance)
     weight = re.sub('\.0', '', weight)
+    intensity = {'Heavy': ' (H)', 'Medium': ' (M)', 'Light': ' (L)', '': ''}[intensity]
 
-    str_list = [str(i) for i in [weight, distance, n, reps] if i != '']
+    str_list = [str(i) for i in [weight, distance, n, reps, failure, intensity] if i != '']
     str_agg = 'x'.join(str_list)
+    str_agg = str_agg.replace('x ', ' ')
+    str_agg = str_agg.replace('x*', '*')
     return(str_agg)
 
 def agg_table(tbl_log):
@@ -267,7 +270,7 @@ def agg_table(tbl_log):
     #Prepare table
     tbl_log['Date'] = pd.to_datetime(tbl_log['Date'], format = '%Y-%m-%d')
     #tbl_log = tbl_log.loc[tbl_log['Category'] == 'Strength']
-    tbl_log = tbl_log[['Date', 'Order', 'Parent', 'Name', 'Set', 'Weight', 'Distance', 'Reps', 'Failure', 'RPE']].copy()
+    tbl_log = tbl_log[['Date', 'Order', 'Category', 'Parent', 'Name', 'Intensity', 'Set', 'Weight', 'Distance', 'Reps', 'Failure', 'RPE']].copy()
     tbl_log.sort_values(['Date', 'Order', 'Name', 'Set'], inplace = True)
 
     #Transform numbers to strings
@@ -275,15 +278,16 @@ def agg_table(tbl_log):
         tbl_log[i] = tbl_log[i].fillna('').astype(str)
         #tbl_log[i] = np.where(tbl_log[i] != '', tbl_log[i] + unit, tbl_log[i])
     tbl_log['Reps'] = tbl_log['Reps'].astype(int)
+    tbl_log['Intensity'] = tbl_log['Intensity'].fillna('')
 
     #Calculate metrics for each workout
-    tbl_log = tbl_log.groupby(['Date', 'Parent', 'Name', 'Weight', 'Distance', 'Reps']).agg(n = ('Set', len), failure = ('Failure', lambda x: any(x == True)), order = ('Order', min)).reset_index()
+    tbl_log = tbl_log.groupby(['Date', 'Category', 'Parent', 'Name', 'Intensity', 'Weight', 'Distance', 'Reps']).agg(n = ('Set', len), failure = ('Failure', lambda x: any(x == True)), order = ('Order', min)).reset_index()
     tbl_log['n'] = tbl_log['n'].astype(int)
 
     #Create aggregated string
-    tbl_log['agg_str'] = tbl_log.apply(lambda row: create_string(row['Weight'], row['Distance'], row['n'], row['Reps'], row['failure']), axis = 1)
+    tbl_log['agg_str'] = tbl_log.apply(lambda row: create_string(row['Weight'], row['Distance'], row['n'], row['Reps'], row['failure'], row['Intensity']), axis = 1)
 
-    tbl_log = tbl_log.sort_values(['Date', 'order']).groupby(['Date', 'Parent', 'Name'], as_index=False).agg(agg_string = ('agg_str', lambda x: ';\n'.join(x)), order = ('order', min))
+    tbl_log = tbl_log.sort_values(['Date', 'order']).groupby(['Date', 'Category', 'Parent', 'Name'], as_index=False).agg(agg_string = ('agg_str', lambda x: ';\n'.join(x)), order = ('order', min))
     tbl_log.sort_values(['Date', 'order'], inplace = True)
 
     #Add timestamp columns
@@ -294,7 +298,12 @@ def agg_table(tbl_log):
     #tbl_log['agg_string'] = tbl_log['Name'] + ' ' + tbl_log['agg_string']
 
     #Pivot
-    df_out = tbl_log.pivot_table(index = ['Parent', 'Name'], columns = ['week', 'date', 'day_of_week'], 
+    tbl_log['Category'] = pd.Categorical(tbl_log['Category'], categories = ['Strength', 'Climbing', 'Skill'], ordered = True)
+    df_out = tbl_log.pivot_table(index = ['Category', 'Parent', 'Name'], columns = ['week', 'date', 'day_of_week'], 
                              values = 'agg_string', aggfunc = lambda x: '; '.join(x))
+
+    df_out.index.names = [None, None, None]
+    df_out.columns.names = [None, None, None]
+    df_out = df_out.droplevel(1)
 
     return(df_out)
