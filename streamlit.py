@@ -129,6 +129,7 @@ with st.form(ex):
         
         failure = st.checkbox('To Failure?')
         notes = st.text_input('Notes')
+        intens = st.selectbox('Intensity', options = ['Heavy', 'Light', 'Medium', ''], index = 3)
         timer = st.time_input('Timer', value = time(2, 30))
         
     submitted = st.form_submit_button(f'Submit {ex}')
@@ -136,7 +137,7 @@ with st.form(ex):
     if submitted and not stop:                
         mutable.append({'Exercise Name': [ex], 'Set': [nset], 'Weight': [weight],
                             'Distance': [distance], 'Reps': [reps], 'RPE': [RPE],
-                            'Failure': [failure], 'Notes': [notes], 
+                            'Failure': [failure], 'Intensity': intens, 'Notes': [notes], 
                             'Order': [norder], 'Rest': [to_s(timer)]})
         
         #Save the scheduled end time when the timer is started
