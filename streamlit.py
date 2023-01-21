@@ -146,7 +146,7 @@ with st.form(ex):
 if stop:
     end_time[0] = None
     
-print([i for i in st.session_state.keys()])
+st.write(st.session_state)
 if f'Reps_{ex}' in st.session_state:
     st.write(st.session_state[f'Reps_{ex}'])
     
