@@ -117,10 +117,10 @@ with st.form(ex):
     
     c1, c2 = st.columns(2)
     with c1:
-        weight = st.number_input('Weight', key = f'Weight_{ex}', step = .5)
-        distance = st.number_input('Distance', key = f'Distance_{ex}', step = .5)
-        reps = st.number_input('Reps', key = f'Reps_{ex}', step = 1.0)
-        RPE = st.number_input('RPE', key = f'RPE_{ex}', min_value = 0.0, max_value = 10.0, step = .5)        
+        weight = st.number_input('Weight', key = f'Weight_{ex}', value = params['Weight'], step = .5)
+        distance = st.number_input('Distance', key = f'Distance_{ex}', value = params['Distance'], step = .5)
+        reps = st.number_input('Reps', key = f'Reps_{ex}', value = params['Reps'], step = 1.0)
+        RPE = st.number_input('RPE', key = f'RPE_{ex}', value = params['RPE'], min_value = 0.0, max_value = 10.0, step = .5)      
         
     with c2:
         st.write('')
