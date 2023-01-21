@@ -82,13 +82,17 @@ st.title('Workout Logger')
 
 # --- Workout Level Input ---
 
-with st.expander('Workout Input:'):
-    c1, c2, c3, c4, c5 = st.columns(5)
-    wo_name = c1.text_input('Workout Title', value = 'Strength')
-    wo_date = c2.date_input('Workout Date', value = date.today())
-    bw = c3.number_input('Bodyweight', step = 1.0, value = np.nan)       
-    workout_notes = c4.text_input('Workout Notes:') 
-    workout_rating = c5.number_input('Workout Rating', value = np.nan, min_value = 0.0, max_value = 10.0, step = 1.0)
+c1, c2, c3, c4, c5 = st.tabs(['Name', 'Date', 'Bodyweight', 'Notes', 'Rating'])
+with c1:
+    wo_name = st.text_input('Workout Title', value = 'Strength')
+with c2:
+    wo_date = st.date_input('Workout Date', value = date.today())
+with c3:
+    bw = st.number_input('Bodyweight', step = 1.0, value = np.nan)       
+with c4:
+    workout_notes = st.text_input('Workout Notes:') 
+with c5:
+    workout_rating = st.number_input('Workout Rating', value = np.nan, min_value = 0.0, max_value = 10.0, step = 1.0)
 
 if bw == bw:
     bodyweight[0] = bw
