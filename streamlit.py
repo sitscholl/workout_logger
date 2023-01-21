@@ -97,10 +97,14 @@ with c5:
 if bw == bw:
     bodyweight[0] = bw
     
+st.markdown('---')
+    
 # --- Timer ---  
 
 ph = st.empty()
 stop = st.button('Stop timer')
+
+st.markdown('---')
                 
 # --- Data Input Form ---  
 
@@ -150,9 +154,11 @@ with st.form(ex):
 if stop:
     end_time[0] = None
     
-st.write(st.session_state)
-if f'Reps_{ex}' in st.session_state:
-    st.write(st.session_state[f'Reps_{ex}'])
+#st.write(st.session_state)
+#if f'Reps_{ex}' in st.session_state:
+#    st.write(st.session_state[f'Reps_{ex}'])
+
+st.markdown('---')
     
 # --- Generate table for current workout ---
 
