@@ -38,8 +38,7 @@ workouts_id = st.secrets['workouts_id']
 
 notion = Client(auth=token)
 
-@st.cache(ttl = 86400) 
-#TODO: remove ttl and add button to update notion database
+@st.cache()
 def get_notion(token, db_id, query_filter = None):
     db_raw = call_notion(token, db_id, query_filter)
     return(to_df(db_raw['results']))
