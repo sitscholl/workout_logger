@@ -38,7 +38,8 @@ workouts_id = st.secrets['workouts_id']
 
 notion = Client(auth=token)
 
-@st.cache(ttl = 86400)
+@st.cache(ttl = 86400) 
+#TODO: remove ttl and add button to update notion database
 def get_notion(token, db_id, query_filter = None):
     db_raw = call_notion(token, db_id, query_filter)
     return(to_df(db_raw['results']))
@@ -100,7 +101,6 @@ stop = st.button('Stop timer')
 # --- Data Input Form ---  
 
 norder = len(mutable)+1
-#ex_default = last_wo.loc[last_wo['Order'].fillna(999).astype(int) == norder, 'Exercise Name'].tolist()[0] #If exercise not found, this raises an Index Error
 ex_options = active_exercises + accessory_exercises + [i for i in ex_database['Name'].unique() if i not in active_exercises]
 ex = st.selectbox('Exercise', 
                   options = ex_options)
@@ -117,20 +117,20 @@ with st.form(ex):
     
     c1, c2 = st.columns(2)
     with c1:
-        weight = st.number_input('Weight', value = params['Weight'], step = .5)
-        distance = st.number_input('Distance', value = params['Distance'], step = .5)
-        reps = st.number_input('Reps', value = params['Reps'], step = 1.0)
-        RPE = st.number_input('RPE', value = params['RPE'], min_value = 0.0, max_value = 10.0, step = .5)        
+        weight = st.number_input('Weight', key = f'Weight_{ex}', value = params['Weight'], step = .5)
+        distance = st.number_input('Distance', key = f'Distance_{ex}', value = params['Distance'], step = .5)
+        reps = st.number_input('Reps', key = f'Reps_{ex}', value = params['Reps'], step = 1.0)
+        RPE = st.number_input('RPE', key = f'RPE_{ex}', value = params['RPE'], min_value = 0.0, max_value = 10.0, step = .5)        
         
     with c2:
         st.write('')
         st.write('')
         st.write('')
         
-        failure = st.checkbox('To Failure?')
-        notes = st.text_input('Notes')
-        intens = st.selectbox('Intensity', options = ['Heavy', 'Light', 'Medium', ''], index = 3)
-        timer = st.time_input('Timer', value = time(2, 30))
+        failure = st.checkbox('To Failure?', key = f'Failure_{ex}')
+        notes = st.text_input('Notes', key = f'Notes_{ex}')
+        intens = st.selectbox('Intensity', key = f'Intensity_{ex}', options = ['Heavy', 'Light', 'Medium', ''], index = 3)
+        timer = st.time_input('Timer', key = f'Timer_{ex}', value = time(2, 30))
         
     submitted = st.form_submit_button(f'Submit {ex}')
     
