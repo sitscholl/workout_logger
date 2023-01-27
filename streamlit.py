@@ -31,18 +31,7 @@ async def start_timer(ph, s):
         
         if stop:
             break
-            
-def autoplay_audio(url = "https://www.orangefreesounds.com/wp-content/uploads/2022/04/Small-bell-ringing-short-sound-effect.mp3"):
-
-    md = f"""
-        <audio autoplay="true">
-        <source src={url} type="audio/mp3">
-        </audio>
-        """
-    st.markdown(
-        md,
-        unsafe_allow_html=True,
-    )
+           
 
 token = st.secrets['token']
 log_id = st.secrets['log_id']
@@ -270,7 +259,7 @@ if (end_time[0] != None) and (end_time[0] > datetime.datetime.now()):
     
     asyncio.run(start_timer(ph, t))
     
-    autoplay_audio()
+    #autoplay_audio()
     
     ph.empty()
     end_time[0] = None
