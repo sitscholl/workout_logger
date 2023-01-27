@@ -11,6 +11,7 @@ import asyncio
 import gspread
 from gspread_dataframe import set_with_dataframe
 import calendar
+import time
 
 def to_s(t):
     
@@ -30,6 +31,18 @@ async def start_timer(ph, s):
         
         if stop:
             break
+            
+def autoplay_audio(url = "https://www.orangefreesounds.com/wp-content/uploads/2022/04/Small-bell-ringing-short-sound-effect.mp3"):
+
+    md = f"""
+        <audio autoplay="true">
+        <source src=f'"{url}"' type="audio/mp3">
+        </audio>
+        """
+    st.markdown(
+        md,
+        unsafe_allow_html=True,
+    )
 
 token = st.secrets['token']
 log_id = st.secrets['log_id']
@@ -257,16 +270,7 @@ if (end_time[0] != None) and (end_time[0] > datetime.datetime.now()):
     
     asyncio.run(start_timer(ph, t))
     
-    html_string = """
-            <audio controls autoplay>
-              <source src="https://www.orangefreesounds.com/wp-content/uploads/2022/04/Small-bell-ringing-short-sound-effect.mp3" type="audio/mp3">
-            </audio>
-            """
-
-    sound = st.empty()
-    sound.markdown(html_string, unsafe_allow_html=True)  # will display a st.audio with the sound you specified in the "src" of the html_string and autoplay it
-    time.sleep(2)  # wait for 2 seconds to finish the playing of the audio
-    sound.empty()  # optionally delete the element afterwards
+    autoplay_audio()
     
     ph.empty()
     end_time[0] = None
