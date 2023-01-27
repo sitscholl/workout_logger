@@ -36,7 +36,7 @@ def autoplay_audio(url = "https://www.orangefreesounds.com/wp-content/uploads/20
 
     md = f"""
         <audio autoplay="true">
-        <source src=f'"{url}"' type="audio/mp3">
+        <source src={url} type="audio/mp3">
         </audio>
         """
     st.markdown(
