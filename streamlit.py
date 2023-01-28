@@ -185,7 +185,7 @@ st.markdown('---')
 # --- Detailed Tables ---
 
 with st.expander('Check detailed workout log'):
-    st.dataframe(wo_tbl.sort_values(['Exercise Name', 'Set'])
+    st.dataframe(wo_tbl.sort_values(['Exercise Name', 'Set']))
     
 st.markdown('---')
 
