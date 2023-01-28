@@ -189,7 +189,7 @@ st.markdown('---')
 
 # --- Push Data to Notion ---
 
-end_wo = st.button('Finish Workout')
+end_wo = st.sidebar.button('Finish Workout')
 if end_wo:
 
     data_push = wo_tbl.merge(ex_database[['Name', 'page_id']].rename(columns = {'Name': 'Exercise Name'}),
@@ -243,7 +243,7 @@ if end_wo:
     
 # --- Reset Workout ---
 
-clear_wo = st.button('Clear Workout')
+clear_wo = st.sidebar.button('Clear Workout')
 if clear_wo:
     mutable.clear()
     end_time[0] = None
