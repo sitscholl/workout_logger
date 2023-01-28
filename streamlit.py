@@ -146,7 +146,7 @@ with st.form(ex):
         
     submitted = st.form_submit_button(f'Submit {ex}')
     
-    if submitted and ((end_time[0] = None) or (end_time[0] < datetime.datetime.now())):                
+    if submitted and ((end_time[0] == None) or (end_time[0] < datetime.datetime.now())):                
         mutable.append({'Exercise Name': [ex], 'Set': [nset], 'Weight': [weight],
                             'Distance': [distance], 'Reps': [reps], 'RPE': [RPE],
                             'Failure': [failure], 'Intensity': intens, 'Notes': [notes], 
