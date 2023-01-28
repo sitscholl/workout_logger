@@ -99,6 +99,8 @@ st.title('Workout Logger')
 
 # --- Workout Level Input ---
 
+st.markdown("### Workout Input")
+
 c1, c2, c3, c4, c5 = st.tabs(['Name', 'Date', 'Bodyweight', 'Notes', 'Rating'])
 with c1:
     wo_name = st.text_input('Workout Title', value = 'Strength')
@@ -117,6 +119,8 @@ if bw == bw:
 st.markdown('---')
                    
 # --- Data Input Form ---  
+
+st.markdown("### Exercise Input")
 
 norder = len(mutable)+1
 ex_options = active_exercises + accessory_exercises + [i for i in ex_database['Name'].unique() if i not in active_exercises]
