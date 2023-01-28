@@ -41,7 +41,13 @@ def autoplay_audio(url = "https://www.orangefreesounds.com/wp-content/uploads/20
     st.markdown(
         md,
         unsafe_allow_html=True,
-    )           
+    )
+ 
+st.set_page_config(
+    page_title="Workout Logger",
+    page_icon="🏋️‍♀️",
+    initial_sidebar_state="collapsed"
+)
 
 token = st.secrets['token']
 log_id = st.secrets['log_id']
@@ -185,8 +191,6 @@ st.table(wo_agg.style.format(precision=1))
 with st.expander('Check detailed workout log'):
     st.dataframe(wo_tbl.sort_values(['Exercise Name', 'Set']).style.format(precision=1))
     
-st.markdown('---')
-
 # --- Push Data to Notion ---
 
 end_wo = st.sidebar.button('Finish Workout')
@@ -251,8 +255,7 @@ if clear_wo:
     
     st.experimental_rerun()
 
-st.markdown('---')
-         
+        
 # --- Timer ---
     
 if (end_time[0] != None) and (end_time[0] > datetime.datetime.now()):
