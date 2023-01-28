@@ -109,14 +109,7 @@ if bw == bw:
     bodyweight[0] = bw
     
 st.markdown('---')
-    
-# --- Timer ---  
-
-ph = st.empty()
-stop = st.button('Stop timer')
-
-st.markdown('---')
-                
+                   
 # --- Data Input Form ---  
 
 norder = len(mutable)+1
@@ -153,7 +146,7 @@ with st.form(ex):
         
     submitted = st.form_submit_button(f'Submit {ex}')
     
-    if submitted and not stop:                
+    if submitted and ((end_time[0] = None) or (end_time[0] < datetime.datetime.now())):                
         mutable.append({'Exercise Name': [ex], 'Set': [nset], 'Weight': [weight],
                             'Distance': [distance], 'Reps': [reps], 'RPE': [RPE],
                             'Failure': [failure], 'Intensity': intens, 'Notes': [notes], 
@@ -162,15 +155,16 @@ with st.form(ex):
         #Save the scheduled end time when the timer is started
         end_time[0] = datetime.datetime.now() + datetime.timedelta(seconds = to_s(timer))
 
+# --- Timer ---  
+
+ph = st.empty()
+stop = st.button('Stop timer')
+
 if stop:
     end_time[0] = None
     
-#st.write(st.session_state)
-#if f'Reps_{ex}' in st.session_state:
-#    st.write(st.session_state[f'Reps_{ex}'])
-
 st.markdown('---')
-    
+      
 # --- Generate table for current workout ---
 
 if len(mutable) > 0:
