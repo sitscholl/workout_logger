@@ -67,7 +67,7 @@ def push_notion(token, log_id, wo_id, data, wo_date, wo_notes, wo_rating, bodywe
             "Intensity": {"type": "select", "select": {"name": row['Intensity']}}
         }
         
-        for i in ['Weight', 'Distance', 'RPE', 'Reps']:
+        for i in ['Weight', 'Distance', 'RPE', 'Reps', 'Intensity']:
             if (row[i] == 0) or (row[i] != row[i]) or (row[i] is None):
                 del properties[i]
     
