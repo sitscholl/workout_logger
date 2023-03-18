@@ -259,7 +259,7 @@ def agg_table(tbl_log):
     for i, unit in zip(['Weight', 'Distance'], ['kg', 'cm']):
         tbl_log[i] = tbl_log[i].fillna('').astype(str)
         #tbl_log[i] = np.where(tbl_log[i] != '', tbl_log[i] + unit, tbl_log[i])
-    tbl_log['Reps'] = tbl_log['Reps'].astype(int)
+    tbl_log['Reps'] = tbl_log['Reps'].fillna(0).astype(int)
     tbl_log['Intensity'] = tbl_log['Intensity'].fillna('')
 
     #Calculate metrics for each workout
