@@ -213,8 +213,9 @@ if end_wo:
         st.success('🟢 Data succesfully send to notion!') 
         
         #st.experimental_rerun()
-    except:
+    except Exception as e:
         st.dataframe(data_push)
+        st.write(e)
         st.error('⛔ Error during push_notion function. Please make sure all input variables are valid!')
         
     #Push aggregated table to google sheet
