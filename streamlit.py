@@ -230,24 +230,29 @@ if end_wo:
     df_out = agg_table(tbl_log)
     
     #2 send to google sheets
-    scope = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
+    try:
+        scope = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
 
-    creds = st.secrets["gcp_service_account"]
-    client = gspread.service_account_from_dict(creds, scope)   
-    gtable = client.open("Workout Summary")
-    sheet_name = f"{calendar.month_abbr[wo_date.month]}{wo_date.year}"
-    sheets = [i.title for i in gtable.worksheets()]
+        creds = st.secrets["gcp_service_account"]
+        client = gspread.service_account_from_dict(creds, scope)   
+        gtable = client.open("Workout Summary")
+        sheet_name = f"{calendar.month_abbr[wo_date.month]}{wo_date.year}"
+        sheets = [i.title for i in gtable.worksheets()]
 
-    if sheet_name not in sheets:
-        gtable.add_worksheet(sheet_name, rows = 100, cols = 100)
-    else:
-        gtable.worksheet(sheet_name).clear()
+        if sheet_name not in sheets:
+            gtable.add_worksheet(sheet_name, rows = 100, cols = 100)
+        else:
+            gtable.worksheet(sheet_name).clear()
 
-    ws = gtable.worksheet(sheet_name)
+        ws = gtable.worksheet(sheet_name)
 
-    set_with_dataframe(worksheet=ws, dataframe=df_out, include_index=True, include_column_header=True, resize=True)
-    
-    st.success('🟢 Data succesfully send to google sheet!') 
+        set_with_dataframe(worksheet=ws, dataframe=df_out, include_index=True, include_column_header=True, resize=True)
+
+        st.success('🟢 Data succesfully send to google sheet!') 
+    except Exception as e:
+        st.dataframe(df_out)
+        st.write(e)
+        st.error('⛔ Error during push_notion function. Please make sure all input variables are valid!')
     
 # --- Reset Workout ---
 
