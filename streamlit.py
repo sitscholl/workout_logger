@@ -222,7 +222,7 @@ if end_wo:
     #1 get data from notion
     month_start = f'{wo_date.year}-{wo_date.month:02}-01'
 
-    wo_ids = call_notion(token, workouts_id, query_filter = {'property': 'Date', 'date': {'after': month_start}})
+    wo_ids = call_notion(token, workouts_id, query_filter = {'property': 'Date', 'date': {'on_or_after': month_start}})
     wo_ids = [i['id'] for i in wo_ids['results']]
 
     log_call = [call_notion(token, log_id, query_filter = {'property': 'Workout', 'relation': {'contains': i}}) for i in wo_ids]
