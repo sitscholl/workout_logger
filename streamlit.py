@@ -241,8 +241,7 @@ if end_wo:
         sheets = [i.title for i in gtable.worksheets()]
 
         if sheet_name not in sheets:
-            tmpl = client.open('Template') 
-            tmpl.duplicate_sheet(1765995081, new_sheet_name=sheet_name)
+            gtable.duplicate_sheet(1765995081, new_sheet_name=sheet_name)
             #gtable.add_worksheet(sheet_name, rows = 100, cols = 100)
         else:
             gtable.worksheet(sheet_name).clear()
