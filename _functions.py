@@ -250,7 +250,7 @@ def create_string(weight, distance, n, reps, failure, intensity):
 def agg_table(tbl_log):
 
     #Prepare table
-    tbl_log['Date'] = pd.to_datetime(tbl_log['Date'], format = '%Y-%m-%d')
+    tbl_log['Date'] = pd.to_datetime(tbl_log['Date'], exact = False)
     #tbl_log = tbl_log.loc[tbl_log['Category'] == 'Strength']
     tbl_log = tbl_log[['Date', 'Order', 'Category', 'Parent', 'Name', 'Intensity', 'Set', 'Weight', 'Distance', 'Reps', 'Failure', 'RPE']].copy()
     tbl_log.sort_values(['Date', 'Order', 'Name', 'Set'], inplace = True)
