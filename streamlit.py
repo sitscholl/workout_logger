@@ -228,6 +228,7 @@ if end_wo:
     log_call = [call_notion(token, log_id, query_filter = {'property': 'Workout', 'relation': {'contains': i}}) for i in wo_ids]
     tbl_log = pd.concat([to_df(i['results']) for i in log_call])
     
+    st.write(tbl_lot)
     df_out = agg_table(tbl_log)
     
     #2 send to google sheets
